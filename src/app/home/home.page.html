@@ -127,7 +127,7 @@
               <h1 class="m-black text-3xl mt-4 pricing-card-subtitle"><sup class="m-bold text-base-content/90">{{ currency[selectedLanguage] }}</sup> {{ item.price[selectedLanguage] }} <sub class="m-bold text-base-content/90">/mo</sub></h1>
               <h2 class="m-bold text-xl mt-6 pricing-card-title">{{ item.categoryName[selectedLanguage] }}</h2>
               <p class="mt-3 m-book pricing-card-description">{{ item.description[selectedLanguage] }}</p>
-              <button [ngClass]="{'bg-white text-black': i == 1, 'bg-base-300 text-base-content': i != 1}" class="btn  w-full my-4">Get Started</button>
+              <button (click)="onPayment(i)" [ngClass]="{'bg-white text-black': i == 1, 'bg-base-300 text-base-content': i != 1}" class="btn  w-full my-4">Get Started</button>
               <div *ngFor="let feature of item.features; let j = index" class="flex items-center gap-3 p-3">
                 <div><span class="icon-[akar-icons--check]"></span></div>
                 <div>{{ feature[selectedLanguage] }}</div>

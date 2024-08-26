@@ -305,4 +305,9 @@ export class HomePage implements AfterViewInit {
     this.router.navigate([path])
   }
 
+  onPayment(category: number): void {
+    const selectedPrice = this.pricing[category]
+    console.log(selectedPrice)
+  }
+
 }
