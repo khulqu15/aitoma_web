@@ -1,0 +1,59 @@
+<div class="max-w-md w-full bg-base-100 p-4 rounded-xl">
+  <div *ngIf="!is_demo">
+    <h1 class="text-xl">Find Your Industry</h1>
+    <form (submit)="onSubmit($event)" ngNativeValidate>
+      <div class="form-control mt-3">
+        <label for="key" class="m-book text-sm">Key</label>
+        <input [(ngModel)]="key" [ngModelOptions]="{standalone: true}" required type="text" id="key" class="input input-bordered w-full text-sm m-book mt-2" placeholder="Enter industry's key">
+      </div>
+      <div class="form-control mt-3">
+        <label for="token" class="m-book text-sm">Token</label>
+        <textarea [(ngModel)]="token" [ngModelOptions]="{standalone: true}" required id="token" class="textarea textarea-bordered w-full text-sm m-book mt-2" placeholder="Enter industry's token"></textarea>
+      </div>
+      <div class="my-2">
+        <re-captcha
+          *ngIf="!isElectron"
+          [siteKey]="siteKey"
+          [(ngModel)]="form_token"
+          (resolved)="resolvedCaptcha($event)"
+          [ngModelOptions]="{standalone: true}"
+          required>
+        </re-captcha>
+      </div>
+      <div class="flex items-center gap-2">
+        <button (click)="is_demo = true; form_token = undefined" type="button" class="btn mt-3">Demo</button>
+        <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white mt-3">Submit</button>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="is_demo">
+    <h1 class="text-xl">Demo Version</h1>
+    <form (submit)="onSubmitDemo($event)" ngNativeValidate>
+      <div class="form-control mt-3">
+        <label for="name" class="m-book text-sm">Name</label>
+        <input [required]="true" [(ngModel)]="name" [ngModelOptions]="{standalone: true}" type="text" id="name" class="input input-bordered w-full text-sm m-book mt-2" placeholder="Enter name">
+      </div>
+      <div class="form-control mt-3">
+        <label for="location" class="m-book text-sm">Location</label>
+        <textarea required [(ngModel)]="location" [ngModelOptions]="{standalone: true}" id="location" class="textarea textarea-bordered w-full text-sm m-book mt-2" placeholder="Enter location"></textarea>
+      </div>
+      <div class="my-2">
+        <re-captcha
+          *ngIf="!isElectron"
+          [siteKey]="siteKey"
+          [(ngModel)]="form_token"
+          (resolved)="resolvedCaptcha($event)"
+          [ngModelOptions]="{standalone: true}"
+          required>
+        </re-captcha>
+        <div *ngIf="!form_token && isSubmitted" class="text-red-500">
+          This field is required.
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button (click)="is_demo = false; form_token = undefined" type="button" class="btn mt-3">Industry</button>
+        <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white mt-3">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>

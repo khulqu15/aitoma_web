@@ -1,0 +1,78 @@
+<div>
+  <ul class="menu bg-base-200 text-base-content min-h-full h-[100vh] overflow-y-auto w-80 p-4 space-y-2">
+    <div class="flex w-full gap-3 items-center mb-8">
+      <img src="../../../assets/image/logo.png" class="w-12" alt="aitoma logo">
+      <div>
+        <h2 class="text-3xl m-bold">Aitoma</h2>
+        <h6 class="m-book">By Hayago Indonesia</h6>
+      </div>
+    </div>
+    <div class="divider">Branch</div>
+    <li *ngIf="industries.length < 2">
+      <a (click)="navigatePush('pricing')">
+        <span class="icon-[solar--home-add-bold] text-xl"></span>
+        Request New
+      </a>
+    </li>
+    <li *ngFor="let industry of industries; let i = index">
+      <div class="flex w-full items-center justify-between gap-2 py-0" [ngClass]="{'bg-blue-600 text-white': i == selectedIndustry}">
+        <a *ngIf="!loading" (click)="selectIndustry(i)" :industry class="flex gap-2 items-center grow w-full">
+          <div class="w-6 h-6 rounded-full bg-blue-700">
+            <img [src]="industry.profile.logo" alt="Hayago">
+          </div>
+          {{ industry.profile?.name }}
+        </a>
+        <div class="dropdown dropdown-end text-base-content">
+          <div tabindex="0" role="button" class="btn m-1 btn-sm px-0" [ngClass]="{'bg-blue-600 text-white border-0': i == selectedIndustry}"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+            <li><a (click)="editIndustry(i)">Edit</a></li>
+            <li><label for="delete_modal" (click)="selectedData = i">Remove</label></li>
+          </ul>
+        </div>
+      </div>
+    </li>
+
+    <div class="divider">Menu</div>
+    <li><a (click)="navigatePush('home')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('dashboard')}"><span class="text-xl icon-[ic--round-dashboard]"></span> {{ menu[0][selectedLanguage] }}</a></li>
+    <li><a (click)="navigatePush('devices')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('devices')}"><span class="text-xl icon-[ic--outline-device-hub]"></span> {{ menu[1][selectedLanguage] }}</a></li>
+    <!-- <li><a (click)="navigatePush('actuators')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('actuators')}"><span class="text-xl icon-[mdi--motor]"></span> {{ menu[2][selectedLanguage] }}</a></li> -->
+    <!-- <li><a (click)="navigatePush('sensors')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('sensors')}"><span class="text-xl icon-[tabler--photo-sensor-2]"></span> {{ menu[3][selectedLanguage] }}</a></li> -->
+    <!-- <li><a (click)="navigatePush('conditions')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('conditions')}"><span class="text-xl icon-[mdi--arrow-decision]"></span> {{ menu[4][selectedLanguage] }}</a></li> -->
+    <li><a (click)="navigatePush('datasheets')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('datasheets')}"><span class="text-xl icon-[solar--diagram-up-bold]"></span> {{ menu[5][selectedLanguage] }}</a></li>
+    <li><a (click)="navigatePush('incidents')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('incidents')}"><span class="text-xl icon-[carbon--warning-alt-filled]"></span> {{ menu[6][selectedLanguage] }}</a></li>
+  </ul>
+
+  <input type="checkbox" id="edit_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Edit Industry</h3>
+      <form (submit)="updateIndustry($event)" ngNativeValidate>
+        <div class="form-control my-3">
+          <label for="name">Name</label>
+          <input required type="text" name="name" id="name" class="input input-bordered w-full text-sm m-book" [(ngModel)]="name" placeholder="Enter industry's name" [ngModelOptions]="{standalone: true}"/>
+        </div>
+        <div class="form-control my-3">
+          <label for="location">Location</label>
+          <input required type="text" name="location" id="location" class="input input-bordered w-full text-sm m-book" [(ngModel)]="location" placeholder="Enter industry's location" [ngModelOptions]="{standalone: true}"/>
+        </div>
+        <div class="modal-action">
+          <label for="edit_modal" class="btn">Cancel</label>
+          <button type="submit" class="btn bg-blue-600 text-white px-6">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <input type="checkbox" id="delete_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Remove Industry</h3>
+      <p class="m-book text-sm">Industry will be deleted permanently</p>
+      <div class="modal-action">
+        <label for="delete_modal" class="btn">Cancel</label>
+        <button (click)="removeIndustry(selectedData)" class="btn btn-error px-6">Remove</button>
+      </div>
+    </div>
+  </div>
+
+</div>

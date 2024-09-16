@@ -1,0 +1,797 @@
+<ion-content [fullscreen]="true">
+
+  <input type="checkbox" id="sensor_form_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box max-w-2xl">
+      <h3 class="text-lg font-bold">{{ selectedData == null ? 'Add Sensor' : 'Edit Sensor' }}</h3>
+      <form (submit)="onSubmitSensor($event)" class="space-y-2 mt-3">
+        <div class="flex gap-3 items-center">
+          <div class="form-control w-3/4">
+            <label for="sensor_name" class="text-sm m-book">Sensor Name</label>
+            <input [(ngModel)]="sensor.name" id="sensor_name" placeholder="Thermocouple Temperature" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+          <div class="form-control">
+            <label for="sensor_unit" class="text-sm m-book">Sensor unit</label>
+            <input [(ngModel)]="sensor.unit" id="sensor_unit" placeholder="Thermocouple Temperature" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+        </div>
+        <div class="form-control">
+          <label for="sensor_location" class="text-sm m-book">Sensor Location</label>
+          <input [(ngModel)]="sensor.location" id="sensor_location" placeholder="Motor 3Phase Room A" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="form-control">
+            <label for="sensor_threshold_min" class="text-sm m-book capitalize">value min</label>
+            <input [(ngModel)]="sensor.threshold.min" id="sensor_threshold_min" placeholder="0" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+          <div class="form-control">
+            <label for="sensor_threshold_mid" class="text-sm m-book capitalize">value mid</label>
+            <input [(ngModel)]="sensor.threshold.mid" id="sensor_threshold_mid" placeholder="5" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+          <div class="form-control">
+            <label for="sensor_threshold_max" class="text-sm m-book capitalize">value max</label>
+            <input [(ngModel)]="sensor.threshold.max" id="sensor_threshold_max" placeholder="10" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+        </div>
+        <div class="form-control">
+          <label for="sensor_interface" class="text-sm m-book">Sensor Interface</label>
+          <select [(ngModel)]="sensor.interface" id="sensor_interface" class="text-sm m-book select mt-1 select-bordered w-full" [ngModelOptions]="{standalone: true}" required>
+            <option *ngFor="let interface of interfaces; let i = index" [value]="interface">{{ interface }}</option>
+          </select>
+        </div>
+        <div class="form-control mb-3">
+          <label for="sensor_interface" class="text-lg my-3">Sensor Pins</label>
+          <div *ngIf="sensor.interface == 'SPI'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="spi_mosi_pin" class="text-sm m-book uppercase">mosi pin</label>
+              <input [(ngModel)]="spi.mosi" id="spi_mosi_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="spi_miso_pin" class="text-sm m-book uppercase">miso pin</label>
+              <input [(ngModel)]="spi.miso" id="spi_miso_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="spi_sck_pin" class="text-sm m-book uppercase">sck pin</label>
+              <input [(ngModel)]="spi.sck" id="spi_sck_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="spi_ss_pin" class="text-sm m-book uppercase">ss pin</label>
+              <input [(ngModel)]="spi.ss" id="spi_ss_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'I2C'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="i2c_sda_pin" class="text-sm m-book uppercase">sda pin</label>
+              <input [(ngModel)]="i2c.sda" id="i2c_sda_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="i2c_scl_pin" class="text-sm m-book uppercase">scl pin</label>
+              <input [(ngModel)]="i2c.scl" id="i2c_scl_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'UART'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="uart_rx_pin" class="text-sm m-book uppercase">rx pin</label>
+              <input [(ngModel)]="uart.rx" id="uart_rx_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="uart_tx_pin" class="text-sm m-book uppercase">tx pin</label>
+              <input [(ngModel)]="uart.tx" id="uart_tx_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'MODBUS'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="modbus_a_pin" class="text-sm m-book uppercase">a (+) pin</label>
+              <input [(ngModel)]="modbus.a" id="modbus_a_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="modbus_b_pin" class="text-sm m-book uppercase">b (-) pin</label>
+              <input [(ngModel)]="modbus.b" id="modbus_b_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'CANBUS'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="canbus_canh_pin" class="text-sm m-book uppercase">can h pin</label>
+              <input [(ngModel)]="canbus.canh" id="canbus_canh_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="canbus_canl_pin" class="text-sm m-book uppercase">can l pin</label>
+              <input [(ngModel)]="canbus.canl" id="canbus_canl_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'USB'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="usb_dplus_pin" class="text-sm m-book uppercase">D(+) pin</label>
+              <input [(ngModel)]="usb.dplus" id="usb_dplus_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="usb_dmin_pin" class="text-sm m-book uppercase">D(-) pin</label>
+              <input [(ngModel)]="usb.dmin" id="usb_dmin_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'USB-SPI'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="usbspi_mosi_pin" class="text-sm m-book uppercase">mosi pin</label>
+              <input [(ngModel)]="usbspi.mosi" id="usbspi_mosi_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="usbspi_miso_pin" class="text-sm m-book uppercase">miso pin</label>
+              <input [(ngModel)]="usbspi.miso" id="usbspi_miso_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="usbspi_sck_pin" class="text-sm m-book uppercase">sck pin</label>
+              <input [(ngModel)]="usbspi.sck" id="usbspi_sck_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="usbspi_ss_pin" class="text-sm m-book uppercase">ss pin</label>
+              <input [(ngModel)]="usbspi.ss" id="usbspi_ss_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="usbspi_data_pin" class="text-sm m-book uppercase">data (+/-) pin</label>
+              <input [(ngModel)]="usbspi.data" id="usbspi_data_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'ETHERNET RJ-45'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="rj45_txplus_pin" class="text-sm m-book uppercase">tx (+) pin</label>
+              <input [(ngModel)]="rj45.txplus" id="rj45_txplus_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rj45_txmin_pin" class="text-sm m-book uppercase">tx (-) pin</label>
+              <input [(ngModel)]="rj45.txmin" id="rj45_txmin_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rj45_rxplus_pin" class="text-sm m-book uppercase">rx (+) pin</label>
+              <input [(ngModel)]="rj45.rxplus" id="rj45_rxplus_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rj45_rxmin_pin" class="text-sm m-book uppercase">rx (-) pin</label>
+              <input [(ngModel)]="rj45.rxmin" id="rj45_rxmin_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="sensor.interface == 'RS-232'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="rs232_tx_pin" class="text-sm m-book uppercase">tx pin</label>
+              <input [(ngModel)]="rs232.tx" id="rs232_tx_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rs232_rx_pin" class="text-sm m-book uppercase">rx pin</label>
+              <input [(ngModel)]="rs232.rx" id="rs232_rx_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rs232_rts_pin" class="text-sm m-book uppercase">rts pin</label>
+              <input [(ngModel)]="rs232.rts" id="rs232_rts_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rs232_cts_pin" class="text-sm m-book uppercase">cts pin</label>
+              <input [(ngModel)]="rs232.cts" id="rs232_cts_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rs232_dtr_pin" class="text-sm m-book uppercase">dtr pin</label>
+              <input [(ngModel)]="rs232.dtr" id="rs232_dtr_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="rs232_dsr_pin" class="text-sm m-book uppercase">dsr pin</label>
+              <input [(ngModel)]="rs232.dsr" id="rs232_dsr_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-action">
+          <label for="sensor_form_modal" class="btn">Cancel</label>
+          <button type="submit" class="btn bg-blue-600 text-white px-4">Submit</button>
+        </div>
+      </form>
+    </div>
+    <label class="modal-backdrop" for="sensor_form_modal">Close</label>
+  </div>
+
+  <input type="checkbox" id="actuator_form_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box max-w-2xl">
+      <h3 class="text-lg font-bold">{{ selectedActuator == null ? 'Add Actuator' : 'Edit Actuator' }}</h3>
+      <form (submit)="onSubmitActuator($event)" class="space-y-2 mt-3">
+        <div class="form-control">
+          <label for="actuator_name" class="text-sm m-book">Actuator Name</label>
+          <input [(ngModel)]="actuator.name" id="actuator_name" placeholder="Motor 3 Phase" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+        </div>
+        <div class="form-control">
+          <label for="actuator_location" class="text-sm m-book">Actuator Location</label>
+          <input [(ngModel)]="actuator.location" id="actuator_location" placeholder="Zone B, Room A" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label for="actuator_threshold_min" class="text-sm m-book capitalize">value min</label>
+            <input [(ngModel)]="actuator.threshold.min" id="actuator_threshold_min" placeholder="0" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+          <div class="form-control">
+            <label for="actuator_threshold_max" class="text-sm m-book capitalize">value max</label>
+            <input [(ngModel)]="actuator.threshold.max" id="actuator_threshold_max" placeholder="10" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+          </div>
+        </div>
+        <div class="form-control">
+          <label for="actuator_module" class="text-sm m-book">Actuator Module</label>
+          <select [(ngModel)]="actuator.module" id="actuator_module" class="text-sm m-book select mt-1 select-bordered w-full" [ngModelOptions]="{standalone: true}" required>
+            <option *ngFor="let module of modules; let i = index" [value]="module">{{ module }}</option>
+          </select>
+        </div>
+        <div class="form-control mb-3">
+          <label for="actuator_module" class="text-lg my-3">Module Pins</label>
+          <div *ngIf="actuator.module == 'INVERTER 1to3'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="inverter_pwm1_pin" class="text-sm m-book uppercase">pwm1 pin</label>
+              <input [(ngModel)]="inverter.pwm1" id="inverter_pwm1_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="inverter_pwm2_pin" class="text-sm m-book uppercase">pwm2 pin</label>
+              <input [(ngModel)]="inverter.pwm2" id="inverter_pwm2_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="inverter_en_pin" class="text-sm m-book uppercase">en pin</label>
+              <input [(ngModel)]="inverter.en" id="inverter_en_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="inverter_fault_pin" class="text-sm m-book uppercase">fault pin</label>
+              <input [(ngModel)]="inverter.fault" id="inverter_fault_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="actuator.module == 'ESC'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="esc_pwm_pin" class="text-sm m-book uppercase">pwm pin</label>
+              <input [(ngModel)]="esc.pwm" id="esc_pwm_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="actuator.module == 'BTS' || actuator.module == 'BTN'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="btn_in_a_pin" class="text-sm m-book uppercase">Input A pin</label>
+              <input [(ngModel)]="btn.in_a" id="btn_in_a_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="btn_in_b_pin" class="text-sm m-book uppercase">Input B pin</label>
+              <input [(ngModel)]="btn.in_b" id="btn_in_b_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+          <div *ngIf="actuator.module == 'LM'" class="grid grid-cols-3 gap-3">
+            <div class="form-control">
+              <label for="lm_inverting_pin" class="text-sm m-book uppercase">Inverting pin</label>
+              <input [(ngModel)]="lm.inverting" id="lm_inverting_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="lm_non_inverting_pin" class="text-sm m-book uppercase">Non Inverting pin</label>
+              <input [(ngModel)]="lm.non_inverting" id="lm_non_inverting_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+            <div class="form-control">
+              <label for="lm_output_pin" class="text-sm m-book uppercase">Output Pin</label>
+              <input [(ngModel)]="lm.output" id="lm_output_pin" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-action">
+          <label for="actuator_form_modal" class="btn">Cancel</label>
+          <button type="submit" class="btn bg-blue-600 text-white px-4">Submit</button>
+        </div>
+      </form>
+    </div>
+    <label class="modal-backdrop" for="actuator_form_modal">Close</label>
+  </div>
+
+  <input type="checkbox" id="condition_form_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box max-w-2xl">
+      <h3 class="text-lg font-bold">{{ selectedActuator == null ? 'Add Actuator' : 'Edit Actuator' }}</h3>
+      <form (submit)="onSubmitCondition($event)" class="space-y-2 mt-3" ngNativeValidate>
+        <div class="form-control">
+          <label for="condition_name" class="text-sm m-book">Condition Name</label>
+          <input [(ngModel)]="condition_name" id="condition_name" placeholder="PID Control" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required/>
+        </div>
+        <div class="flex items-center justify-between items-center">
+          <h1>Sensors Conditions ({{ conditions.length }})</h1>
+          <div class="mt-3">
+            <button type="button" (click)="addNewCondition()" class="btn bg-blue-600 text-white btn-sm">Add condition</button>
+          </div>
+        </div>
+        <div *ngFor="let item_condition of conditions; let i = index" class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label (for)="'sensor_id_name_'+'i'" class="text-sm m-book">Sensor</label>
+            <select [(ngModel)]="conditions[i].id" (id)="'sensor_id_name_'+i" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required>
+              <option value="">Select Sensor</option>
+              <option *ngFor="let sensor of data.sensors; let sensor_index = index" (value)="sensor.key + '-' + sensor.name">{{ sensor.key }}-{{ sensor.name }}</option>
+            </select>
+          </div>
+          <div class="flex items-end gap-2">
+            <div class="form-control w-full">
+              <label (for)="'sensor_value_'+'i'" class="text-sm m-book">Value</label>
+              <input [(ngModel)]="conditions[i].value" (id)="'sensor_value_'+i" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required />
+            </div>
+            <button type="button" (click)="removeCondition(i)" class="btn btn-error border-0">X</button>
+          </div>
+        </div>
+        <div class="flex items-center justify-between items-center">
+          <h1>Actuator Actions ({{ actions.length }})</h1>
+          <div class="mt-3">
+            <button type="button" (click)="addNewAction()" class="btn bg-blue-600 text-white btn-sm">Add Action</button>
+          </div>
+        </div>
+        <div *ngFor="let item_action of actions; let i = index" class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label (for)="'action_id_name_'+'i'" class="text-sm m-book">Actuator</label>
+            <select [(ngModel)]="actions[i].id" (id)="'action_id_name_'+i" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required>
+              <option value="">Select Actuator</option>
+              <option *ngFor="let actuator of data.actuators; let action_index = index" (value)="actuator.key + '-' + actuator.name">{{ actuator.key }}-{{ actuator.name }}</option>
+            </select>
+          </div>
+          <div class="flex items-end gap-2">
+            <div class="form-control w-full">
+              <label (for)="'action_value_'+'i'" class="text-sm m-book">Value</label>
+              <input [(ngModel)]="actions[i].value" (id)="'action_value_'+i" type="text" class="text-sm m-book input mt-1 input-bordered w-full" [ngModelOptions]="{standalone: true}" required />
+            </div>
+            <button type="button" (click)="removeAction(i)" class="btn btn-error border-0">X</button>
+          </div>
+        </div>
+        <div class="modal-action">
+          <label for="condition_form_modal" class="btn">Cancel</label>
+          <button type="submit" class="btn bg-blue-600 text-white px-4">Submit</button>
+        </div>
+      </form>
+    </div>
+    <label class="modal-backdrop" for="condition_form_modal">Close</label>
+  </div>
+
+  <input type="checkbox" id="sensor_delete_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">
+        <span>Delete Sensor</span>
+      </h3>
+      <p class="text-sm m-book">Sensor will be deleted permanently</p>
+      <div class="modal-action">
+        <label for="sensor_delete_modal" class="btn">Cancel</label>
+        <button (click)="deleteSensor()" class="btn btn-error">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="checkbox" id="actuator_delete_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">
+        <span>Delete Actuator</span>
+      </h3>
+      <p class="text-sm m-book">actuator will be deleted permanently</p>
+      <div class="modal-action">
+        <label for="actuator_delete_modal" class="btn">Cancel</label>
+        <button (click)="deleteActuator()" class="btn btn-error">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="checkbox" id="condition_delete_modal" class="modal-toggle" />
+  <div class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">
+        <span>Delete Condition</span>
+      </h3>
+      <p class="text-sm m-book">Condition will be deleted permanently</p>
+      <div class="modal-action">
+        <label for="condition_delete_modal" class="btn">Cancel</label>
+        <button (click)="deleteCondition()" class="btn btn-error">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-base-200 w-full min-h-screen relative text-base-content">
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex items-start justify-center">
+        <div class="w-full">
+          <div class="flex items-center justify-between w-full p-3 bg-base-200">
+            <div>
+              <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+                <span class="icon-[tabler--menu-2]"></span>
+              </label>
+              <span class="lg:flex items-center gap-2 hidden"><a (click)="navigatePush('/devices')">Device</a> <span class="icon-[ant-design--caret-right-filled]"></span> {{ data?.name }}</span>
+            </div>
+            <app-navbar/>
+          </div>
+          <div class="w-full lg:h-[89vh] h-[88vh] relative overflow-y-auto min-h-scren bg-base-100 rounded-tl-2xl p-6">
+            <div class="w-full grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-3">
+              <div class="col-span-4 relative p-2">
+                <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
+                  <div>
+                    <div class="flex w-full items-center gap-3">
+                      <div class="badge" [ngClass]="{'bg-blue-600 text-white': data?.status == 'online', 'bg-base-content text-base-300': data?.status != 'online'}">{{ data?.port }}</div>
+                      <h4>{{ data?.name }}</h4>
+                      <div class="flex md:hidden items-center md:justify-end m-book">
+                        <span class="icon-[mdi--battery]"></span> <span class="text-xs"> {{ data?.battery || "00" }}%</span>
+                      </div>
+                    </div>
+                    <p class="text-xs m-book md:mt-3 mt-6">{{ data?.location }}</p>
+                  </div>
+                  <div class="flex items-center md:justify-end gap-3">
+                    <div class="md:text-right">
+                      <div class="md:flex hidden items-center md:justify-end w-full m-book mb-2">
+                        <span class="icon-[mdi--battery]"></span> <span class="text-xs"> {{ data?.battery || "00" }}%</span>
+                      </div>
+                      <span class="text-xs m-book">{{ data?.created_at || '-' }}</span>
+                    </div>
+                    <div class="dropdown dropdown-end md:relative absolute right-0 -top-0">
+                      <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                        <li><a>Refresh State</a></li>
+                        <li><a>Download Firmware</a></li>
+                        <li><a>Update Device</a></li>
+                        <li><a>Reset Firmware</a></li>
+                        <li><a>Delete Firmware</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full">
+                  <div role="tablist" class="tabs tabs-lifted mt-8">
+                    <input type="radio" name="scada-tab" role="tab" class="tab text-xs" aria-label="Sensors"/>
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-3">
+                      <div class="flex items-center justify-between">
+                        <h3>Scada Monitoring</h3>
+                        <div class="flex gap-2 items-center">
+                          <button *ngIf="data.sensors != null" class="btn bg-blue-600 hover:bg-blue-700 btn-sm text-white">Export All</button>
+                          <label for="sensor_form_modal" class="btn bg-blue-600 hover:bg-blue-700 btn-sm text-white">Add Sensor</label>
+                        </div>
+                      </div>
+                      <div *ngIf="data.sensors" class="grid md:grid-cols-2 mt-3 grid-cols-1 gap-3">
+                        <div *ngFor="let sensor of data?.sensors; let i = index" class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                              <div>
+                                <h4 class="m-book text-sm">{{ sensor?.name }} ({{ sensor?.interface }})</h4>
+                                <h4 class="m-book text-xs opacity-70">{{ sensor?.location }}</h4>
+                                <div *ngIf="sensor.pins.length > 0">
+                                  <span *ngFor="let pin of sensor.pins; let pin_index = index" class="text-xs m-book badge">{{ pin.key }}: {{ pin.value }}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <h1 class="text-2xl">{{ sensor?.value }}<sub>{{ sensor?.unit }}</sub></h1>
+                            <div class="dropdown dropdown-end md:relative absolute right-0 -top-0">
+                              <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                              <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                <li><a>Prediction</a></li>
+                                <li><a (click)="generateLogs(sensor.key)">Set Dummy</a></li>
+                                <li><a>Export Data</a></li>
+                                <li><label for="sensor_form_modal" (click)="setSensorData(sensor.key)">Update Sensor</label></li>
+                                <li><label for="sensor_delete_modal" (click)="selectedData = sensor.key">Delete Sensor</label></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <canvas *ngIf="sensor?.logs != null || !loading" class="w-full mt-3" [id]="'chart-'+sensor.key"></canvas>
+                        </div>
+                      </div>
+                      <div *ngIf="data.sensors == null">
+                        <div class="opacity-50 h-[30vh] flex items-center justify-center">Sensors Not Found</div>
+                      </div>
+                    </div>
+
+                    <input type="radio" name="scada-tab" role="tab" class="tab text-xs" aria-label="Actuators"/>
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-3">
+                      <div class="flex items-center justify-between">
+                        <h3>Scada Controlling</h3>
+                        <div class="flex gap-2 items-center">
+                          <label (click)="setActuator(null)" for="actuator_form_modal" class="btn bg-blue-600 hover:bg-blue-700 btn-sm text-white">Add Actuator</label>
+                        </div>
+                      </div>
+                      <div *ngIf="data?.actuators != null" class="grid md:grid-cols-2 mt-3 grid-cols-1 gap-3">
+                        <div *ngFor="let actuator of data?.actuators; let i = index" class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                              <div>
+                                <h4 class="m-book text-sm">{{ actuator?.name }} ({{ actuator?.interface }})</h4>
+                                <h4 class="m-book text-xs opacity-70 my-2">{{ actuator?.location }}</h4>
+                                <span class="badge" *ngFor="let pin of actuator?.pins; let pin_index = index">{{ pin.key }}: {{ pin.value }}</span>
+                              </div>
+                            </div>
+                            <div class="dropdown dropdown-end md:relative absolute right-0 -top-0">
+                              <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                              <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                <li><a>Incidents</a></li>
+                                <li><label for="actuator_form_modal" (click)="setActuator(actuator.key)">Update Actuator</label></li>
+                                <li><label for="actuator_delete_modal" (click)="selectedActuator = actuator.key">Delete Actuator</label></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <form (submit)="toggleRun($event, actuator.key)" class="flex items-center gap-2 justify-between mt-4">
+                            <span>PWM</span>
+                            <input type="number" [(ngModel)]="actuator.value" [ngModelOptions]="{standalone: true}" required placeholder="Enter PWM" class="input input-bordered w-full input-sm max-w-xs" />
+                            <div>
+                              <button type="submit" class="btn btn-sm" [ngClass]="{'bg-primary text-white': actuator?.is_active, 'bg-base-content text-base-300': !actuator?.is_active}">{{ actuator.is_active ? 'Stop' : 'Run' }}</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <div *ngIf="data?.actuators == null" class="grid md:grid-cols-2 mt-3 grid-cols-1 gap-3">
+                        <div class="col-span-2 flex items-center justify-center h-[20vh]">
+                          <h1 class="opacity-60">Actuator Not Found</h1>
+                        </div>
+                      </div>
+                    </div>
+
+                    <input type="radio" name="scada-tab" role="tab" class="tab text-xs" aria-label="OEE"/>
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-3">
+                      <div class="flex items-center justify-between">
+                        <h3>Overall Equipment Effectiveness</h3>
+                        <div class="flex gap-2 items-center">
+                          <button class="btn bg-blue-600 hover:bg-blue-700 btn-sm text-white">Export</button>
+                        </div>
+                      </div>
+                      <div class="grid md:grid-cols-2 grid-cols-1 mt-3 grid-cols-1 gap-3">
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center mb-6 mt-3 justify-between w-full">
+                            <h5 class="m-book">OEE Total</h5>
+                            <h2 class="text-2xl">{{ data?.oee?.oee }}%</h2>
+                          </div>
+                          <progress class="progress progress-primary w-full h-6" [value]="data?.oee?.oee" max="100"></progress>
+                        </div>
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between w-full">
+                            <h5 class="text-sm m-book">Performance</h5>
+                            <h2>{{ data?.oee?.performance }}%</h2>
+                          </div>
+                          <progress class="progress progress-primary w-full" [value]="data?.oee?.performance" max="100"></progress>
+                          <div class="flex items-center justify-between w-full">
+                            <h5 class="text-sm m-book">Quality</h5>
+                            <h2>{{ data?.oee?.quality }}%</h2>
+                          </div>
+                          <progress class="progress progress-primary w-full" [value]="data?.oee?.quality" max="100"></progress>
+                          <div class="flex items-center justify-between w-full">
+                            <h5 class="text-sm m-book">Abailability</h5>
+                            <h2>{{ data?.oee?.availability }}%</h2>
+                          </div>
+                          <progress class="progress progress-primary w-full" [value]="data?.oee?.availability" max="100"></progress>
+                        </div>
+                      </div>
+                      <div class="overflow-x-auto">
+                        <table class="table table-zebra">
+                          <thead>
+                            <tr>
+                              <th>Component</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th>Downtime</th>
+                              <th>{{ data?.oee?.downtime }} minutes</th>
+                            </tr>
+                            <tr>
+                              <th>Good Count</th>
+                              <th>{{ data?.oee?.good_count }}</th>
+                            </tr>
+                            <tr>
+                              <th>Reject Count</th>
+                              <th>{{ data?.oee?.reject_count }}</th>
+                            </tr>
+                            <tr>
+                              <th>Planned Production Time</th>
+                              <th>{{ data?.oee?.planned_production_time }} minutes</th>
+                            </tr>
+                            <tr>
+                              <th>Ideal Cycle Time</th>
+                              <th>{{ data?.oee?.ideal_cycle_time }} minutes</th>
+                            </tr>
+                            <tr>
+                              <th>Actual Cycle Time</th>
+                              <th>{{ data?.oee?.actual_cycle_time }} minutes</th>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <input type="radio" name="scada-tab" role="tab" class="tab text-xs" aria-label="Condition" checked="checked"/>
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-3">
+                      <div class="flex items-center justify-between">
+                        <h3>Condition & Action Algorithm</h3>
+                        <div class="flex gap-2 items-center">
+                          <label for="condition_form_modal" class="btn bg-blue-600 hover:bg-blue-700 btn-sm text-white">Add Algorithm</label>
+                        </div>
+                      </div>
+                      <div *ngIf="data?.conditions != null" class="grid md:grid-cols-2 grid-cols-1 gap-2 mt-3">
+                        <div *ngFor="let condition of data?.conditions; let i = index" class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center gap-3 w-full justify-between">
+                            <div>
+                              <h4>{{ condition.name }}</h4>
+                            </div>
+                            <div>
+                              <div class="dropdown dropdown-end md:relative absolute right-0 -top-0">
+                                <div tabindex="0" role="button" class="btn btn-sm bg-base-200 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                  <li><label for="condition_form_modal" (click)="setCondition(condition.key)">Update Algorithm</label></li>
+                                  <li><label for="condition_delete_modal" (click)="selectedCondition = condition.key">Delete Algorithm</label></li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="p-4 bg-blue-600 rounded-lg text-white">
+                            <div *ngFor="let condition_item of condition.conditions; let condition_index = index">
+                              <div class="flex items-center justify-between px-4 text-xs m-book">
+                                <p>Set Point Input {{ condition_index + 1 }}</p>
+                                <p class="text-sm">{{ condition_item.value }} {{ data?.sensors[condition_item.id].unit }}</p>
+                              </div>
+                              <div class="flex items-center justify-between px-4 text-xs m-book">
+                                <p>Sensor {{ condition_index + 1 }}</p>
+                                <p class="text-sm">{{ condition_item.name }}</p>
+                              </div>
+                            </div>
+                            <div *ngFor="let action_item of condition.actions; let action_index = index">
+                              <div class="flex items-center justify-between px-4 text-xs m-book">
+                                <p>Set Point Output {{ action_index + 1 }}</p>
+                                <p class="text-sm">{{ action_item.value }} pwm</p>
+                              </div>
+                              <div class="flex items-center justify-between px-4 text-xs m-book">
+                                <p>Actuator {{ action_index + 1 }}</p>
+                                <p class="text-sm">{{ action_item.name }}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="data?.conditions == null" class="w-full h-[20vh] flex items-center justify-center">
+                        <h2 class="opacity-50">Conditions Not Found</h2>
+                      </div>
+                    </div>
+
+                    <input type="radio" name="scada-tab" role="tab" class="tab text-xs" aria-label="Gateway"/>
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-3">
+                      <div class="flex items-center justify-between">
+                        <h3>Communication Gateway</h3>
+                      </div>
+                      <div class="grid grid-cols-1 gap-2 mt-3">
+
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div>
+                              <h4>WiFi {{data?.communications?.wifi?.ip != null && data?.communications?.wifi?.ip != "" ? '(' + data?.communications?.wifi?.ip + ')' : ''}}</h4>
+                            </div>
+                            <div class="flex items-center gap-3">
+                              <input type="checkbox" class="toggle" ([ngModel])="wifi_active" (change)="setData('/communications/wifi/active', !data?.communications?.wifi.active)" [checked]="data?.communications?.wifi?.active"/>
+                              <span class="icon-[icon-park-solid--up-one] text-xl transition-all" [ngClass]="{'rotate-180': wifi_active}"></span>
+                            </div>
+                          </div>
+                          <div class="overflow-hidden transition-all" [ngClass]="{'h-0 p-0': !wifi_active}">
+                            <form>
+                              <div class="mb-2 mt-3">
+                                <label for="ssid">SSID</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/wifi/ssid', $event.target.value)" [ngModel]="wifi_ssid" [ngModelOptions]="{standalone: true}" id="ssid" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="password">Password</label>
+                              </div>
+                              <input [type]="showPassword ? 'text' : 'password'" (keyup)="setData('/communications/wifi/password', $event.target.value)" [ngModel]="wifi_password" [ngModelOptions]="{standalone: true}" id="password" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="form-control max-w-md mt-3">
+                                <label class="label cursor-pointer">
+                                  <input type="checkbox" ([ngModel])="showPassword" (change)="showPassword = !showPassword" class="checkbox checkbox-primary" />
+                                  <span class="label-text">Show Password</span>
+                                </label>
+                              </div>
+                              <div class="mb-2 mt-3">
+                                <label for="wifi_ip_pc">IP PC</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/wifi/ip_pc', $event.target.value)"  [ngModel]="wifi_ip_pc" placeholder="0.0.0.0" [ngModelOptions]="{standalone: true}" id="wifi_ip_pc" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="wifi_ip">IP Device</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/wifi/ip', $event.target.value)"  [ngModel]="wifi_ip" placeholder="0.0.0.0" [ngModelOptions]="{standalone: true}" id="wifi_ip" class="input input-bordered max-w-md w-full text-sm m-book">
+                            </form>
+                          </div>
+                        </div>
+
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div>
+                              <h4>LoRa</h4>
+                            </div>
+                            <div class="flex items-center gap-3">
+                              <input type="checkbox" class="toggle" ([ngModel])="lora_active" (change)="setData('/communications/lora/active', !data?.communications?.lora.active)" [checked]="data?.communications?.lora?.active"/>
+                              <span class="icon-[icon-park-solid--up-one] text-xl transition-all" [ngClass]="{'rotate-180': lora_active}"></span>
+                            </div>
+                          </div>
+                          <div class="overflow-hidden transition-all" [ngClass]="{'h-0 p-0': !lora_active}">
+                            <form>
+                              <div class="mb-2 mt-3">
+                                <label for="frequency_lora">Frequency</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lora/frequency', $event.target.value)" [ngModel]="lora_frequency" [ngModelOptions]="{standalone: true}" id="frequency_lora" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="address_lora">Address</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lora/address', $event.target.value)"  [ngModel]="lora_address" placeholder="0x00.0x00.0x00.0x00.0x00.0x00" [ngModelOptions]="{standalone: true}" id="address_lora" class="input input-bordered max-w-md w-full text-sm m-book">
+                            </form>
+                          </div>
+                        </div>
+
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div>
+                              <h4>LAN</h4>
+                            </div>
+                            <div class="flex items-center gap-3">
+                              <input type="checkbox" class="toggle" ([ngModel])="lan_active" (change)="setData('/communications/lan/active', !data?.communications?.lan.active)" [checked]="data?.communications?.lan?.active"/>
+                              <span class="icon-[icon-park-solid--up-one] text-xl transition-all" [ngClass]="{'rotate-180': lan_active}"></span>
+                            </div>
+                          </div>
+                          <div class="overflow-hidden transition-all" [ngClass]="{'h-0 p-0': !lan_active}">
+                            <form>
+                              <div class="mb-2 mt-3">
+                                <label for="lan_mac">MAC Address</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lan/mac', $event.target.value)" [ngModel]="lan_mac" [ngModelOptions]="{standalone: true}" id="lan_mac" placeholder="0x00.0x00.0x00.0x00.0x00.0x00" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="lan_static_ip">Static IP</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lan/ip_lan', $event.target.value)"  [ngModel]="lan_ip" placeholder="0.0.0.0" [ngModelOptions]="{standalone: true}" id="lan_static_ip" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="lan_gateway_ip">Gateway IP</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lan/ip_gateway', $event.target.value)"  [ngModel]="lan_gateway" placeholder="0.0.0.0" [ngModelOptions]="{standalone: true}" id="lan_gateway_ip" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="lan_subnet">Subnet</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/lan/subnet', $event.target.value)"  [ngModel]="lan_subnet" placeholder="0.0.0.0" [ngModelOptions]="{standalone: true}" id="lan_subnet" class="input input-bordered max-w-md w-full text-sm m-book">
+                            </form>
+                          </div>
+                        </div>
+
+                        <div class="w-full bg-base-200 p-4 rounded-xl">
+                          <div class="flex items-center justify-between">
+                            <div>
+                              <h4>USB</h4>
+                            </div>
+                            <div class="flex items-center gap-3">
+                              <input type="checkbox" class="toggle" ([ngModel])="usb_active" (change)="setData('/communications/usb/active', !data?.communications?.usb.active)" [checked]="data?.communications?.usb?.active"/>
+                              <span class="icon-[icon-park-solid--up-one] text-xl transition-all" [ngClass]="{'rotate-180': usb_active}"></span>
+                            </div>
+                          </div>
+                          <div class="overflow-hidden transition-all" [ngClass]="{'h-0 p-0': !usb_active}">
+                            <form>
+                              <div class="mb-2 mt-3">
+                                <label for="usb_port">USB Port</label>
+                              </div>
+                              <input type="text" (keyup)="setData('/communications/usb/com', $event.target.value)" [ngModel]="usb_port" [ngModelOptions]="{standalone: true}" id="usb_port" placeholder="COM12" class="input input-bordered max-w-md w-full text-sm m-book">
+                              <div class="mb-2 mt-3">
+                                <label for="usb_baudrate">Baudrate</label>
+                              </div>
+                              <select required [(ngModel)]="usb_baudrate" (change)="setData('/communications/usb/baudrate', $event.target.value)" [ngModelOptions]="{standalone: true}" id="usb_baudrate" class="select select-bordered max-w-md w-full text-sm">
+                                <option value="300">300</option>
+                                <option value="600">600</option>
+                                <option value="1200">1200</option>
+                                <option value="2400">2400</option>
+                                <option value="4800">4800</option>
+                                <option value="9600">9600</option>
+                                <option value="14400">14400</option>
+                                <option value="19200">19200</option>
+                                <option value="28800">28800</option>
+                                <option value="31250">31250</option>
+                                <option value="38400">38400</option>
+                                <option value="57600">57600</option>
+                                <option value="115200">115200</option>
+                              </select>
+                            </form>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <app-menu menu_active="devices"/>
+      </div>
+    </div>
+  </div>
+</ion-content>

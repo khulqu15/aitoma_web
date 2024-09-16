@@ -1,20 +1,14 @@
 import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-
-// import { AngularFireModule } from '@angular/fire/compat';
-// import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-// import { AngularFireStorageModule } from '@angular/fire/compat/storage'
-// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-// import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-// import { environment } from 'src/environments/environment';
+import { NavbarComponent } from '../components/navbar/navbar.component';
+import { FooterComponent } from '../components/footer/footer.component';
 
 @Component({
   selector: 'app-about',
   templateUrl: 'about.page.html',
-  styleUrls: ['about.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, NavbarComponent, FooterComponent],
 })
 
 
@@ -39,12 +33,6 @@ export class AboutPage implements AfterViewInit {
     {0: "Pertanyaan yang Sering Diajukan", 1: "Frequently Asked Questions", 2: "よくある質問"},
     {0: "Temukan jawaban atas pertanyaan umum tentang produk dan layanan kami.", 1: "Find answers to common questions about our products and services.", 2: "製品およびサービスに関するよくある質問への回答をご覧ください。"}
   ]
-
-  footer: any = {
-    0: "Hak Cipta © 2024 Hayago Indonesia. Hak cipta dilindungi undang-undang.",
-    1: "Copyright © 2024 Hayago Indonesia. All rights reserved.",
-    2: "著作権 © 2024 Hayago Indonesia. 無断転載を禁じます。"
-  }
 
   about: any = {
     title: {
@@ -89,9 +77,25 @@ export class AboutPage implements AfterViewInit {
         {
           name: "Mohammad Khusnul Khuluq",
           role: {
-            0: "Pemimpin, Programmer",
-            1: "Leader, Programmer",
-            2: "リーダー、プログラマー"
+            0: "CO - Founder, CTO",
+            1: "CO - Founder, CTO",
+            2: "共同創設者, CTO"
+          }
+        },
+        {
+          name: "Hariz Izzudin",
+          role: {
+            0: "CEO",
+            1: "CEO",
+            2: "CEO"
+          }
+        },
+        {
+          name: "Kasih Aisyah",
+          role: {
+            0: "CMO",
+            1: "CMO",
+            2: "CMO"
           }
         },
         {
@@ -113,9 +117,9 @@ export class AboutPage implements AfterViewInit {
         {
           name: "Fajri Syawqi",
           role: {
-            0: "Teknik Mekatronika",
-            1: "Mechatronics Engineering",
-            2: "メカトロニクス工学"
+            0: "Desainer CAD",
+            1: "CAD Designer",
+            2: "CADデザイナー"
           }
         },
         {

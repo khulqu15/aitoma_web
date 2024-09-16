@@ -1,0 +1,45 @@
+<ion-content [fullscreen]="true">
+  <div class="grid lg:grid-cols-2 grid-cols-1 w-full min-h-screen bg-base-300 text-base-content">
+    <div class="lg:flex hidden p-8 relative min-h-scren h-[100vh] bg-base-300 flex items-center justify-center">
+      <img src="../../assets/image/login.png" class="w-3/4 inline-block" alt="aitoma device">
+      <div class="px-3 py-1 absolute left-[10%] bg-blue-600 rounded-xl top-[25%]">Artificial Intelligence</div>
+      <div class="px-3 py-1 absolute right-[10%] bg-blue-600 rounded-xl bottom-[25%]">Universal System</div>
+      <div class="px-3 py-1 absolute right-[38%] bg-base-content text-base-300 shadow-2xl rounded-xl bottom-[50%]">Industry Otomation</div>
+    </div>
+    <div class="relative min-h-screen h-[100vh] bg-base-200 flex justify-center items-center">
+      <div class="max-w-md w-full relative">
+        <div class="absolute top-0 left-0 z-20">
+          <button class="btn bg-base-100" (click)="navigatePush('')">Back</button>
+        </div>
+        <form (submit)="onRegisterEmail($event)" class="space-y-3 mt-16">
+          <div>
+            <label for="name" class="m-book">Name</label>
+            <input [(ngModel)]="name" required id="name" [ngModelOptions]="{standalone: true}" id="name" type="text" placeholder="Mohammad" class="input input-bordered w-full mt-2" />
+          </div>
+          <div>
+            <label for="email" class="m-book">Email</label>
+            <input [(ngModel)]="email" required id="email" [ngModelOptions]="{standalone: true}" id="email" type="email" placeholder="user@domain.com" class="input input-bordered w-full mt-2" />
+          </div>
+          <div>
+            <label for="password" class="m-book">Password</label>
+            <input [(ngModel)]="password" required id="password" [ngModelOptions]="{standalone: true}" [type]="show_password ? 'text' : 'password'" placeholder="keep secret" class="input input-bordered w-full" />
+          </div>
+          <div>
+            <label for="re_password" class="m-book">Confirm Password</label>
+            <input [(ngModel)]="re_password" required id="re_password" [ngModelOptions]="{standalone: true}" [type]="show_password ? 'text' : 'password'" placeholder="keep secret" class="input input-bordered w-full" />
+          </div>
+          <div class="form-control">
+            <label class="label cursor-pointer">
+              <span class="label-text">Show password</span>
+              <input type="checkbox" (change)="show_password = !show_password" ([ngModel])="show_password" class="checkbox checkbox-primary" />
+            </label>
+          </div>
+          <div>
+            <button type="submit" class="w-full btn bg-blue-700 text-white mt-4 block">Register</button>
+          </div>
+        </form>
+        <div class="text-center mt-8 m-book">have an account ? <a (click)="navigatePush('login')">Login</a></div>
+      </div>
+    </div>
+  </div>
+</ion-content>

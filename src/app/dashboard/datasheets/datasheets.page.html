@@ -1,0 +1,309 @@
+<ion-content [fullscreen]="true">
+  <div class="bg-base-200 w-full min-h-screen relative text-base-content">
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex items-start justify-center">
+
+        <div class="w-full">
+          <div class="flex items-center justify-between w-full p-3 bg-base-200">
+            <div>
+              <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+                <span class="icon-[tabler--menu-2]"></span>
+              </label>
+              <span class="lg:inline-block hidden">Datasheets</span>
+            </div>
+            <app-navbar/>
+          </div>
+          <div class="w-full lg:h-[89vh] h-[88vh] relative overflow-y-auto min-h-scren bg-base-100 rounded-tl-2xl p-6">
+            <div class="w-full grid grid-cols-1 gap-3">
+              <div class="flex w-full justify-between items-center mb-2">
+                <div>
+                  <label for="form_modal" (click)="setSelect(null)" class="btn bg-blue-600 btn-sm text-white"><span class="icon-[carbon--add] text-2xl"></span>Add Datasheet</label>
+                </div>
+                <input type="checkbox" id="form_modal" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <div class="modal-box">
+                    <form (submit)="onSubmit()">
+                      <h3 class="text-lg font-bold">
+                        <span>{{ selectedData == null ? 'Add Device' : 'Update Device' }}</span>
+                      </h3>
+                      <div class="my-2">
+                        <label for="title" class="m-book text-sm">Incident</label>
+                        <input required [(ngModel)]="title" [ngModelOptions]="{standalone: true}" id="title" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="my-2">
+                        <label for="location" class="m-book text-sm">Location</label>
+                        <input required [(ngModel)]="location" [ngModelOptions]="{standalone: true}" id="location" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="grid grid-cols-2 gap-3 my-2">
+                        <div>
+                          <label for="date" class="m-book text-sm">Date</label>
+                          <input required [(ngModel)]="date" [ngModelOptions]="{standalone: true}" id="date" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                        <div>
+                          <label for="time" class="m-book text-sm">Time</label>
+                          <input required [(ngModel)]="time" [ngModelOptions]="{standalone: true}" id="time" type="time" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                      </div>
+                      <div class="my-2">
+                        <label for="subtitle" class="m-book text-sm">Desciption</label>
+                        <textarea required [(ngModel)]="subtitle" [ngModelOptions]="{standalone: true}" id="subtitle" placeholder="Temperature exceeded 85C in Zone 3" class="textarea textarea-bordered w-full mt-2 text-sm"></textarea>
+                      </div>
+                      <div class="my-2">
+                        <label for="link" class="m-book text-sm">Link</label>
+                        <input required [(ngModel)]="link" [ngModelOptions]="{standalone: true}" id="link" type="url" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="modal-action">
+                        <label for="form_modal" class="btn">Cancel</label>
+                        <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <input type="checkbox" id="delete_modal" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <div class="modal-box">
+                    <h3 class="text-lg font-bold">
+                      <span>Delete Incident ?</span>
+                    </h3>
+                    <div class="my-2">
+                      <p class="m-book text-sm">Are you sure ? data will be deleted permanently.</p>
+                    </div>
+                    <div class="modal-action">
+                      <label for="delete_modal" class="btn">Cancel</label>
+                      <button (click)="onDelete()" type="submit" class="btn btn-error">Delete</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <div class="btn bg-blue-600 btn-sm text-white">Export Data</div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                      <li><a>Delete All</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div *ngFor="let item of data; let i = index" tabindex="0" class="collapse collapse-arrow border-base-300 bg-base-200 border my-2">
+                  <div class="collapse-title">
+                    <div class="w-full grid md:grid-cols-2 grid-cols-1 justify-between items-center gap-3">
+                      <div>
+                        <span class="badge bg-blue-600 text-white capitalize mb-2">{{ item?.category }}</span>
+                        <h4>{{ item?.name }}</h4>
+                        <p class="text-xs mt-1">{{ item?.application }} | {{ item?.serial_number }}</p>
+                      </div>
+                      <div class="md:text-right flex items-center gap-3 md:justify-end">
+                        <div>
+                          <h4>{{ item?.model }}</h4>
+                          <p class="text-xs mt-1">{{ item?.manufacturer }}</p>
+                        </div>
+                        <div class="dropdown dropdown-end md:relative absolute md:right-0 right-8 md:top-0 top-3">
+                          <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                          <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                            <li><a>Delete All</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse-content">
+                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
+                      <div class="col-span-1">
+                        <div class="w-full overflow-x-auto">
+                          <table class="table table-xs">
+                            <thead>
+                              <tr>
+                                <th>Item</th>
+                                <th>Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th>Altitude Max</th>
+                                <th>{{ item?.altitude_max_m }} m</th>
+                              </tr>
+                              <tr>
+                                <th>Ambient Temperature Max</th>
+                                <th>{{ item?.ambient_temperature_max_C }} C</th>
+                              </tr>
+                              <tr>
+                                <th>Bearing Type</th>
+                                <th>{{ item?.bearing_type }} </th>
+                              </tr>
+                              <tr>
+                                <th>Cooling Method</th>
+                                <th>{{ item?.cooling_method }} </th>
+                              </tr>
+                              <tr>
+                                <th>Current Rating</th>
+                                <th>{{ item?.current_rating_A }} A</th>
+                              </tr>
+                              <tr>
+                                <th>Date Manufacturer</th>
+                                <th>{{ item?.date_of_manufacture }} </th>
+                              </tr>
+                              <tr>
+                                <th>Dimension (mm)</th>
+                                <th>height: {{ item?.dimensions_mm?.height }}, width: {{ item?.dimensions_mm?.width }}, length: {{ item?.dimensions_mm?.length }} </th>
+                              </tr>
+                              <tr>
+                                <th>Efficiency</th>
+                                <th>{{ item?.efficiency_percent }} %</th>
+                              </tr>
+                              <tr>
+                                <th>Installation Date</th>
+                                <th>{{ item?.installation_date }}</th>
+                              </tr>
+                              <tr>
+                                <th>Insulation Class</th>
+                                <th>{{ item?.insulation_class }}</th>
+                              </tr>
+                              <tr>
+                                <th>Mounting Type</th>
+                                <th>{{ item?.mounting_type }}</th>
+                              </tr>
+                              <tr>
+                                <th>Noise Level</th>
+                                <th>{{ item?.noise_level_dBA }} dBA</th>
+                              </tr>
+                              <tr>
+                                <th>Power Factore</th>
+                                <th>{{ item?.power_factor }}</th>
+                              </tr>
+                              <tr>
+                                <th>Power Rating kW</th>
+                                <th>{{ item?.power_rating_kW }} kW</th>
+                              </tr>
+                              <tr>
+                                <th>Protection Class</th>
+                                <th>{{ item?.protection_class }}</th>
+                              </tr>
+                              <tr>
+                                <th>Service Factor</th>
+                                <th>{{ item?.service_factor }}</th>
+                              </tr>
+                              <tr>
+                                <th>Shaft Diameter</th>
+                                <th>{{ item?.shaft_diameter_mm }} mm</th>
+                              </tr>
+                              <tr>
+                                <th>Voltage Rating</th>
+                                <th>{{ item?.voltage_rating_V }} V</th>
+                              </tr>
+                              <tr>
+                                <th>Warranty Period</th>
+                                <th>{{ item?.warranty_period_year }} Year</th>
+                              </tr>
+                              <tr>
+                                <th>Weight</th>
+                                <th>{{ item?.weight_kg }} Kg</th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="col-span-1">
+                        <h3>Operational Data</h3>
+                        <div class="w-full overflow-x-auto mt-3">
+                          <table class="table table-xs">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Current</th>
+                                <th>Voltage</th>
+                                <th>Power</th>
+                                <th>Runtime</th>
+                                <th>Vibration</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let operation of item?.operational_data; let j = index">
+                                <th>{{ operation?.timestamp }}</th>
+                                <th>{{ operation?.current_A }}A</th>
+                                <th>{{ operation?.voltage_V }}V</th>
+                                <th>{{ operation?.power_kW }}kW</th>
+                                <th>{{ operation?.runtime_hours }} Hours</th>
+                                <th>{{ operation?.vibration_mms }} m/s<sup>2</sup></th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <h3 class="mt-5">Fault History</h3>
+                        <div class="w-full overflow-x-auto mt-3">
+                          <table class="table table-xs">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Duration(m)</th>
+                                <th>Action</th>
+                                <th>By</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let operation of item?.fault_history; let j = index">
+                                <th>{{ operation?.timestamp }}</th>
+                                <th>{{ operation?.description }}</th>
+                                <th>{{ operation?.duration_min }}</th>
+                                <th>{{ operation?.action_taken }}</th>
+                                <th>{{ operation?.technician }}</th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <h3 class="mt-5">Maintenance Schedule</h3>
+                        <div class="w-full overflow-x-auto mt-3">
+                          <table class="table table-xs">
+                            <thead>
+                              <tr>
+                                <th>Item</th>
+                                <th>Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th>Initial Date</th>
+                                <th>{{ item?.maitenance_schedule?.initial_inspection }}</th>
+                              </tr>
+                              <tr>
+                                <th>Lubrication Schedule</th>
+                                <th>{{ item?.maitenance_schedule?.lubrication_schedule }}</th>
+                              </tr>
+                              <tr>
+                                <th>Interval</th>
+                                <th>{{ item?.maitenance_schedule?.next_inspection_interval_months }} Months</th>
+                              </tr>
+                              <tr>
+                                <th>Recommended Spare Parts</th>
+                                <th>
+                                  <span class="badge m-book text-xs badge-sm" *ngFor="let spare of item?.maitenance_schedule?.recommended_spare_parts; let j = index">
+                                    {{ spare }}
+                                  </span>
+                                </th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <app-menu menu_active="datasheets"/>
+      </div>
+    </div>
+  </div>
+</ion-content>

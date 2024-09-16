@@ -2,7 +2,9 @@ import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@ang
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
+import { NavbarComponent } from '../components/navbar/navbar.component';
+import { FooterComponent } from '../components/footer/footer.component';
+import { MenuComponent } from '../components/menu/menu.component';
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 // import { AngularFireStorageModule } from '@angular/fire/compat/storage'
@@ -13,15 +15,15 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButton],
+  styleUrls: ['home.page.scss'],
+  imports: [IonButton, CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, NavbarComponent, FooterComponent, MenuComponent],
 })
 export class HomePage implements AfterViewInit {
   @ViewChild('backgroundVideo') backgroundVideo!: ElementRef<HTMLVideoElement>;
-
-  currentTheme: string = 'dark';
   selectedLanguage: number = 1;
+  currentTheme: string = 'dark';
+
   languagesVocab: any = [
     {0: 'Solusi', 1: 'Solution', 2: 'ソリューション'},
     {0: 'Layanan', 1: 'Service', 2: 'サービス'},
@@ -285,24 +287,15 @@ export class HomePage implements AfterViewInit {
       console.error('Video playback failed:', error);
     })
     let localTheme: string = localStorage.getItem('theme') || 'dark'
-    let localLanguage: number = parseInt(localStorage.getItem('language')!) || 1
+    let localLanguage: any = localStorage.getItem('language') || 1
+    localLanguage = parseInt(localLanguage)
     if(localTheme != this.currentTheme) this.renderer.setAttribute(document.documentElement, 'data-theme', localTheme);
     if(localLanguage != this.selectedLanguage) this.selectedLanguage = localLanguage
+
   }
 
-  toggleTheme(): void {
-    this.currentTheme = this.currentTheme == 'dark' ? 'light' : 'dark';
-    this.renderer.setAttribute(document.documentElement, 'data-theme', this.currentTheme);
-    localStorage.setItem('theme', this.currentTheme);
-  }
-
-  changeLanguage(option: number): void {
-    this.selectedLanguage = option
-    localStorage.setItem('language', this.selectedLanguage.toString());
-  }
-
-  navigatePush(path: string): void {
-    this.router.navigate([path])
+  navigatePush(path: string, fragment?: string): void {
+    this.router.navigate([path], {fragment: fragment})
   }
 
   onPayment(category: number): void {

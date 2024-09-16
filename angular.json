@@ -18,6 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["leaflet", "@asymmetrik/ngx-leaflet"],
             "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -25,14 +26,16 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
               {
                 "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
+                "input": "./node_modules/leaflet/dist/images",
+                "output": "assets/"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
+            "styles": ["src/global.scss", "src/theme/variables.scss", "node_modules/leaflet/dist/leaflet.css"],
+            "scripts": ["node_modules/leaflet/dist/leaflet.js"]
           },
           "configurations": {
             "production": {
@@ -106,7 +109,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/global.scss", "src/theme/variables.scss", "./node_modules/leaflet/dist/leaflet.css"],
             "scripts": []
           },
           "configurations": {

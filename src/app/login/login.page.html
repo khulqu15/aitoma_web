@@ -1,0 +1,39 @@
+<ion-content [fullscreen]="true">
+  <div class="grid lg:grid-cols-2 grid-cols-1 w-full min-h-screen bg-base-300 text-base-content">
+    <div class="lg:flex hidden p-8 relative min-h-scren h-[100vh] bg-base-300 flex items-center justify-center">
+      <img src="../../assets/image/login.png" class="w-3/4 inline-block" alt="aitoma device">
+      <div class="px-3 py-1 absolute left-[10%] bg-blue-600 rounded-xl top-[25%]">Artificial Intelligence</div>
+      <div class="px-3 py-1 absolute right-[10%] bg-blue-600 rounded-xl bottom-[25%]">Universal System</div>
+      <div class="px-3 py-1 absolute right-[38%] bg-base-content text-base-300 shadow-2xl rounded-xl bottom-[50%]">Industry Otomation</div>
+    </div>
+    <div class="relative min-h-screen h-[100vh] bg-base-200 flex justify-center items-center">
+      <div class="max-w-md w-full relative">
+        <div class="text-center">
+          <img src="../../assets/image/logo.png" alt="aitoma" class="w-12 mb-12 inline-block">
+        </div>
+        <div class="absolute top-0 left-0 z-20">
+          <button class="btn bg-base-100" (click)="navigatePush('')">Back</button>
+        </div>
+        <h1 class="text-2xl mb-3">Wellcome Back</h1>
+        <form (submit)="onLoginEmail($event)" class="space-y-3">
+          <div>
+            <label for="email" class="m-book">Email</label>
+            <input required [(ngModel)]="email" [ngModelOptions]="{standalone: true}" id="email" type="email" placeholder="user@domain.com" class="input input-bordered w-full mt-2" />
+          </div>
+          <div>
+            <label for="password" class="m-book">Password</label>
+            <div class="flex items-center mt-2 gap-2">
+              <input required [(ngModel)]="password" [ngModelOptions]="{standalone: true}" [type]="show_password ? 'text' : 'password'" placeholder="keep secret" class="input input-bordered w-full" />
+              <button (click)="show_password = !show_password" class="btn bg-blue-600 text-white"><span class="icon-[solar--eye-bold]"></span></button>
+            </div>
+          </div>
+          <div>
+            <button type="submit" class="w-full btn bg-blue-700 text-white mt-8 block">Log In</button>
+            <button *ngIf="!isElectron" (click)="loginWithGoogle($event)" type="button" class="w-full btn bg-base-100 text-base-content mt-3 block"><span class="icon-[flat-color-icons--google]"></span> Login with Google</button>
+          </div>
+        </form>
+        <div class="text-center mt-8 m-book">Don't have an account ? <a (click)="navigatePush('register')">Register</a></div>
+      </div>
+    </div>
+  </div>
+</ion-content>

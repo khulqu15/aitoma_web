@@ -1,0 +1,66 @@
+<div class="flex items-center gap-4">
+  <div><button (click)="toggleTheme()"><span [ngClass]="{'icon-[icon-park-solid--dark-mode]': currentTheme === 'light', 'icon-[akar-icons--sun-fill]': currentTheme === 'dark', 'text-xl': true}"></span></button></div>
+  <div>
+    <a>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="icon-[akar-icons--language] text-xl"></div>
+        <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
+          <li><a [ngClass]="{'bg-base-200': selectedLanguage == 1}" (click)="changeLanguage(1)">English</a></li>
+          <li><a [ngClass]="{'bg-base-200': selectedLanguage == 0}" (click)="changeLanguage(0)">Indonesia</a></li>
+          <li><a [ngClass]="{'bg-base-200': selectedLanguage == 2}" (click)="changeLanguage(2)">日本</a></li>
+        </ul>
+      </div>
+    </a>
+  </div>
+  <div>
+    <a>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="icon-[carbon--notification] text-xl"></div>
+        <ul tabindex="0" [tabIndex]="-1" class="dropdown-content relative menu bg-base-300 rounded-box z-20 relative w-96 max-w-md p-2 shadow">
+          <div class="p-2">
+            <h1>Notifications ({{ notifications == null ? 0 : notifications.length }})</h1>
+            <div *ngIf="notifications != null && notifications.length == 0" class="h-[70vh] py-4 flex items-center justify-center">
+              <p class="opacity-50">You don't have notifications</p>
+            </div>
+            <div *ngIf="notifications == null" class="h-[70vh] py-4 flex items-center justify-center">
+              <p class="opacity-50">You don't have notifications</p>
+            </div>
+            <div *ngIf="notifications != null && notifications.length > 0" class="space-y-2 h-[70vh] max-h-[70vh] overflow-y-auto mt-3">
+              <div *ngFor="let notification of notifications; let i = index" class="p-3 flex items-center gap-3 hover:bg-base-200 rounded-xl w-full" [ngClass]="{
+                'bg-base-200': !notification?.is_read,
+                'bg-base-300': notification?.is_read
+              }" target="_blank" (click)="readNotification(i, notification.link)">
+                <div *ngIf="notification" class="w-8 h-8 rounded-full" [ngClass]="{
+                  'bg-yellow-500': notification?.category == 'warning',
+                  'bg-red-500': notification?.category == 'error',
+                  'bg-blue-600': notification?.category != 'warning' && notification?.category != 'error'
+                }"></div>
+                <div>
+                  <h5 class="m-bold">{{ notification?.title }}</h5>
+                  <span class="m-book text-xs">{{ notification?.subtitle }}</span>
+                  <div class="flex items-center justify-between">
+                    <div class="bg-base-content text-base-300 text-xs px-3 rounded-xl">{{ notification?.action }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </a>
+  </div>
+  <div>
+    <a>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button">
+          <img src="../../../assets/image/avatar.png" class="w-8 h-8 overflow-hidden object-center object-cover rounded-full" alt="">
+        </div>
+        <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
+          <li><a>Profile</a></li>
+          <li><a>Setting</a></li>
+          <li><a (click)="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </a>
+  </div>
+</div>

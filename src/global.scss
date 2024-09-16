@@ -80,6 +80,15 @@
   src: url('assets/font/MaisonNeueExtendedBookItalic.otf');
 }
 
+@import "~leaflet/dist/leaflet.css";
+
+.leaflet-control-container {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
 
 * { font-family: 'Maison Neue', sans-serif; }
 .m-bold { font-family: 'Maison Neue Bold', sans-serif; }

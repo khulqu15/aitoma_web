@@ -1,0 +1,89 @@
+<ion-content [fullscreen]="true">
+  <div class="fixed top-0 shadow-xl w-full bg-base-100 left-0 p-3 z-10">
+    <div class="flex items-center justify-between">
+      <div>
+        <button (click)="navigatePush('/home')" class="btn btn-sm" *ngIf="localIndustry != null">Back</button>
+      </div>
+      <div class="flex items-center gap-3">
+        <img src="../../../assets/image/logo.png" alt="Aitoma" class="w-8 h-8">
+        <button (click)="logout()" class="btn btn-error">Logout</button>
+      </div>
+    </div>
+  </div>
+  <form class="fixed w-full min-h-screen gap-4 bg-base-200/80 left-0 z-20 transition-all md:p-12 p-8 backdrop-blur-md grid grid-cols-1 h-[100vh] overflow-y-auto justify-items-center items-center" [ngClass]="{'top-[100vh]': !isStart, 'top-0': isStart}">
+    <div class="absolute top-0 right-0 p-4">
+      <button (click)="isStart = false" class="btn btn-lg">X</button>
+    </div>
+    <div class="space-y-3 max-w-md w-full">
+      <input type="file" id="avatar" class="hidden">
+      <label for="avatar" class="w-full bg-base-200 rounded-2xl p-3 flex items-center gap-3">
+        <div class="avatar w-16 h-16">
+          <img src="../../../assets/image/logo.png" class="w-full h-full object-cover object-center" alt="Aitoma Logo">
+        </div>
+        <div>
+          <h3 class="m-book">Avatar</h3>
+          <span class="m-book text-xs">Click to change</span>
+        </div>
+      </label>
+      <div class="form-control space-y-2">
+        <label for="name" class="m-book text-sm">Name</label>
+        <input type="text" id="name" class="input input-bordered text-sm" placeholder="Hayago Indonesia">
+      </div>
+      <div class="form-control space-y-2">
+        <label for="location" class="m-book text-sm">Location</label>
+        <input type="text" id="location" class="input input-bordered text-sm" placeholder="Sukolilo, Surabaya">
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="form-control space-y-2">
+          <label for="name" class="m-book text-sm">Latitude</label>
+          <input type="text" id="name" class="input input-bordered w-full text-sm" placeholder="-7.276986">
+        </div>
+        <div class="form-control space-y-2">
+          <label for="name" class="m-book text-sm">Longitude</label>
+          <input type="text" id="name" class="input input-bordered w-full  text-sm" placeholder="112.793120">
+        </div>
+      </div>
+      <div class="form-control space-y-2">
+        <label for="name" class="m-book text-sm">Embed Map</label>
+        <input type="text" id="name" class="input input-bordered text-sm" placeholder="<iframe...">
+      </div>
+      <div class="text-right">
+        <button class="btn bg-blue-600 text-white">Pay Now</button>
+      </div>
+    </div>
+  </form>
+  <div class="w-full bg-base-100 min-h-screen grid lg:grid-cols-2 grid-cols-1 gap-4 text-base-content">
+    <div class="min-h-screen flex justify-center items-center p-6">
+      <app-login class="w-full max-w-md"/>
+    </div>
+    <div class="min-h-screen flex items-center justify-center bg-base-200 p-6">
+      <div class="space-y-3">
+        <h1 class="text-2xl">Pricing</h1>
+        <div *ngFor="let price of pricing; let i = index" tabindex="0" class="collapse collapse-arrow border-base-200 bg-base-100 border">
+          <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium">
+            <div class="flex w-full justify-between items-center">
+              <div>
+                {{ price.categoryName[selectedLanguage] }} <span class="badge bg-blue-600 text-white">Level {{ i+2}}</span>
+              </div>
+              <div>
+                {{ price.price[selectedLanguage] }} <sub>{{ currency[selectedLanguage] }}/mo</sub>
+              </div>
+            </div>
+          </div>
+          <div class="collapse-content">
+            <p class="text-sm m-book">{{ price.description[selectedLanguage] }}</p>
+            <ul class="list-decimal ml-6 mt-3 text-sm">
+              <li *ngFor="let feature of price.features; let j = index" class="m-book">
+                {{ feature[selectedLanguage] }}
+              </li>
+            </ul>
+            <div class="w-full text-right">
+              <button (click)="isStart = true; selectedStart = i; onPay(i)" class="btn bg-blue-600 text-white px-8 btn-sm">Start Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

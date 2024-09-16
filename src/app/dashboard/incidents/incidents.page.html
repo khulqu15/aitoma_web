@@ -1,0 +1,131 @@
+<ion-content [fullscreen]="true">
+  <div class="bg-base-200 w-full min-h-screen relative text-base-content">
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex items-start justify-center">
+
+        <div class="w-full">
+          <div class="flex items-center justify-between w-full p-3 bg-base-200">
+            <div>
+              <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+                <span class="icon-[tabler--menu-2]"></span>
+              </label>
+              <span class="lg:inline-block hidden">Incidents</span>
+            </div>
+            <app-navbar/>
+          </div>
+          <div class="w-full lg:h-[89vh] h-[88vh] relative overflow-y-auto min-h-scren bg-base-100 rounded-tl-2xl p-6">
+            <div class="w-full grid grid-cols-1 gap-3">
+              <div class="flex w-full justify-between items-center mb-2">
+                <div>
+                  <label for="form_modal" (click)="setSelect(null)" class="btn bg-blue-600 btn-sm text-white"><span class="icon-[carbon--add] text-2xl"></span>Add Incident</label>
+                </div>
+                <input type="checkbox" id="form_modal" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <div class="modal-box">
+                    <form (submit)="onSubmit()">
+                      <h3 class="text-lg font-bold">
+                        <span>{{ selectedData == null ? 'Add Device' : 'Update Device' }}</span>
+                      </h3>
+                      <div class="my-2">
+                        <label for="title" class="m-book text-sm">Incident</label>
+                        <input required [(ngModel)]="title" [ngModelOptions]="{standalone: true}" id="title" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="my-2">
+                        <label for="location" class="m-book text-sm">Location</label>
+                        <input required [(ngModel)]="location" [ngModelOptions]="{standalone: true}" id="location" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="grid grid-cols-2 gap-3 my-2">
+                        <div>
+                          <label for="date" class="m-book text-sm">Date</label>
+                          <input required [(ngModel)]="date" [ngModelOptions]="{standalone: true}" id="date" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                        <div>
+                          <label for="time" class="m-book text-sm">Time</label>
+                          <input required [(ngModel)]="time" [ngModelOptions]="{standalone: true}" id="time" type="time" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                      </div>
+                      <div class="my-2">
+                        <label for="subtitle" class="m-book text-sm">Desciption</label>
+                        <textarea required [(ngModel)]="subtitle" [ngModelOptions]="{standalone: true}" id="subtitle" placeholder="Temperature exceeded 85C in Zone 3" class="textarea textarea-bordered w-full mt-2 text-sm"></textarea>
+                      </div>
+                      <div class="my-2">
+                        <label for="link" class="m-book text-sm">Link</label>
+                        <input required [(ngModel)]="link" [ngModelOptions]="{standalone: true}" id="link" type="url" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      </div>
+                      <div class="modal-action">
+                        <label for="form_modal" class="btn">Cancel</label>
+                        <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 text-white">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <input type="checkbox" id="delete_modal" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <div class="modal-box">
+                    <h3 class="text-lg font-bold">
+                      <span>Delete Incident ?</span>
+                    </h3>
+                    <div class="my-2">
+                      <p class="m-book text-sm">Are you sure ? data will be deleted permanently.</p>
+                    </div>
+                    <div class="modal-action">
+                      <label for="delete_modal" class="btn">Cancel</label>
+                      <button (click)="onDelete()" type="submit" class="btn btn-error">Delete</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <div class="btn bg-blue-600 btn-sm text-white">Export Data</div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                      <li><a>Delete All</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Incident</th>
+                      <th>Description</th>
+                      <th>Location</th>
+                      <th>Time</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of data; let i = index" class="text-xs">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item?.title }}</td>
+                      <td>{{ item?.subtitle }}</td>
+                      <td>{{ item?.location }}</td>
+                      <td>{{ item?.timestamp }}</td>
+                      <td>
+                        <div class="flex items-center gap-2">
+                          <button class="btn bg-base-300 hover:bg-base-200 btn-sm"><span class="icon-[carbon--document-export]"></span></button>
+                          <label for="form_modal" (click)="setSelect(i)" class="btn btn-success btn-sm"><span class="icon-[carbon--edit]"></span></label>
+                          <label for="delete_modal" (click)="selectedData = i" class="btn btn-error btn-sm"><span class="icon-[ant-design--delete-outlined]"></span></label>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <app-menu menu_active="incidents"/>
+      </div>
+    </div>
+  </div>
+</ion-content>
