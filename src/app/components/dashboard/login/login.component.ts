@@ -76,8 +76,10 @@ export class LoginComponent  implements OnInit {
           } else {
             localIndustries = industryData
           }
+          localStorage.setItem('industries', JSON.stringify(industryData))
+        } else {
+          localStorage.setItem('industries', JSON.stringify([industryData]))
         }
-        localStorage.setItem('industries', JSON.stringify(industryData))
         setTimeout(() => {
           this.router.navigate(['/home']).then(() => window.location.reload())
         }, 250)

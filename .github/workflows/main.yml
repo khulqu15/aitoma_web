@@ -1,0 +1,20 @@
+on: push
+name: Deploy aitoma project
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v3
+
+    - name: Sync file
+      uses: SamKirland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ftp.hayago.id
+        username: ${{ secrets.FTPUSERNAME }}
+        password: ${{ secrets.FTPPASSWORD }}
+        port: 21
+        protocol: ftps
+        local-dir: www
+        server-dir: public_html/aitoma/

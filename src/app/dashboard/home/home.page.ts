@@ -72,12 +72,12 @@ export class HomePage implements OnInit, AfterViewInit {
       if(snapshot.exists()) {
         let industries = Object.entries(snapshot.val()).map(([key, value]: any) => ({ key, ...value }))
         let localIndustries = JSON.parse(localStorage.getItem('industries') as string)
-        let checkIndustry = industries.find((item) => item.profile.key = localIndustries[this.selectedIndustry].key && item.profile.token == localIndustries[this.selectedIndustry].token)
+        let checkIndustry = industries.find((item) => item.profile?.key == localIndustries[this.selectedIndustry].key && item.profile?.token == localIndustries[this.selectedIndustry].token)
         if(checkIndustry != null && checkIndustry != undefined) {
           this.industry = checkIndustry
         } else {
-          // localStorage.removeItem('industries')
-          // this.router.navigate(['/pricing'])
+          localStorage.removeItem('industries')
+          this.router.navigate(['/pricing'])
         }
         this.getIncidents()
         this.initMap()
@@ -193,22 +193,24 @@ export class HomePage implements OnInit, AfterViewInit {
         }
         let oee = this.industry.devices[0].oee
         if(oee != null && oee != undefined) {
-          this.oee_summary = new Chart(this.oee_summary.nativeElement, {
-            type: 'bar',
-            data: {
-              labels: ['Perform', 'Availa', 'Quality'],
-              datasets: [
-                {
-                  label: 'OEE(%)',
-                  data: [oee.performance, oee.availability, oee.quality],
-                  backgroundColor: 'rgba(46, 55, 255, 0.2)',
-                  borderColor: 'rgba(46, 55, 255, 1)',
-                  borderWidth: 1,
-                  borderRadius: 2
-                }
-              ]
-            }
-          })
+          setTimeout(() => {
+            this.oee_summary = new Chart(this.oee_summary.nativeElement, {
+              type: 'bar',
+              data: {
+                labels: ['Perform', 'Availa', 'Quality'],
+                datasets: [
+                  {
+                    label: 'OEE(%)',
+                    data: [oee.performance, oee.availability, oee.quality],
+                    backgroundColor: 'rgba(46, 55, 255, 0.2)',
+                    borderColor: 'rgba(46, 55, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 2
+                  }
+                ]
+              }
+            })
+          }, 300)
         }
       }
     }

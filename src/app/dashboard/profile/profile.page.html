@@ -1,13 +1,57 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>profile</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="bg-base-200 w-full min-h-screen relative text-base-content">
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex items-start justify-center">
+
+        <div class="w-full">
+          <div class="flex items-center justify-between w-full p-3 bg-base-200">
+            <div>
+              <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+                <span class="icon-[tabler--menu-2]"></span>
+              </label>
+              <span class="lg:inline-block hidden">Profile</span>
+            </div>
+            <app-navbar/>
+          </div>
+          <div class="w-full lg:h-[89vh] h-[88vh] relative overflow-y-auto min-h-scren bg-base-100 rounded-tl-2xl p-6">
+            <div class="w-full grid grid-cols-1 gap-3 justify-items-center">
+              <div class="max-w-2xl w-full bg-base-200 p-4 rounded-xl">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <img [src]="avatar" (load)="onImageLoad()" (error)="onImageError()" class="w-16 h-16 overflow-hidden object-center object-cover rounded-full" alt="">
+                    <div class="space-y-2">
+                      <h1>{{ user.displayName }}</h1>
+                      <p class="text-sm m-book">{{ user.email }}</p>
+                    </div>
+                  </div>
+                  <div class="dropdown dropdown-end relative -right-2 -top-2">
+                    <div tabindex="0" role="button" class="btn btn-sm px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                      <li><a>Update Profile</a></li>
+                      <li><a>Reset Password</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="divide bg-base-100">Setting</div>
+              <div class="max-w-2xl w-full bg-base-200 p-4 rounded-xl" *ngFor="let setting of scadaSettings; let i = index">
+                <div class="flex items-center justify-between w-full">
+                  <div>
+                    <h1 class="text-sm">{{ setting.menu }}</h1>
+                  </div>
+                  <div>></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <app-menu menu_active="profile"/>
+      </div>
+    </div>
+  </div>
 </ion-content>

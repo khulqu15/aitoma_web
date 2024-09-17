@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { NavbarComponent } from 'src/app/components/dashboard/navbar/navbar.component';
 import { MenuComponent } from 'src/app/components/dashboard/menu/menu.component';
 import { Database, ref as dbRef, onValue, remove, set } from '@angular/fire/database';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-incidents',
@@ -14,8 +15,13 @@ import { Database, ref as dbRef, onValue, remove, set } from '@angular/fire/data
 })
 export class IncidentsPage implements OnInit {
   database: Database = inject(Database)
-  constructor() { }
+  constructor(private router: Router, private renderer: Renderer2) { }
   data: any = []
+  industry: any = null
+  currentTheme: string = 'dark'
+  selectedIndustry: any = 0
+  selectedLanguage: any = 0
+
   mainPath: string = 'hayago/incidents'
   selectedData: any = null
   title: string = ''
@@ -27,14 +33,54 @@ export class IncidentsPage implements OnInit {
 
   ngOnInit() {
     this.getData()
+    let sessionUser: any = sessionStorage.getItem('user')
+    if(sessionUser == null || sessionUser == undefined || sessionUser == '') this.router.navigate(['/login']).then(() => window.location.reload())
+    else {
+      let localIndustry = localStorage.getItem('industries')
+      if(localIndustry != null && localIndustry != undefined && localIndustry != '') {
+        this.industry = JSON.parse(localIndustry)
+        let localTheme: string = localStorage.getItem('theme') || 'dark'
+        let localLanguage: any = localStorage.getItem('language') || 1
+        localLanguage = parseInt(localLanguage)
+        if(localTheme != this.currentTheme) this.renderer.setAttribute(document.documentElement, 'data-theme', localTheme);
+        if(localLanguage != this.selectedLanguage) this.selectedLanguage = localLanguage
+        this.selectedIndustry = parseInt(localStorage.getItem('selected_industry')!) || 0
+        localStorage.setItem('selected_industry', this.selectedIndustry.toString())
+        this.searchIndustries()
+      } else {
+        this.router.navigate(['/pricing'])
+      }
+    }
   }
+
+  searchIndustries() {
+    let industryRef = dbRef(this.database, '/')
+    onValue(industryRef, (snapshot) => {
+      if(snapshot.exists()) {
+        let industries = Object.entries(snapshot.val()).map(([key, value]: any) => ({ key, ...value }))
+        let localIndustries = JSON.parse(localStorage.getItem('industries') as string)
+        console.log(localIndustries[this.selectedIndustry])
+        let checkIndustry = industries.find((item) => item.profile?.key == localIndustries[this.selectedIndustry].key && item.profile?.token == localIndustries[this.selectedIndustry].token)
+        if(checkIndustry != null && checkIndustry != undefined) {
+          this.industry = checkIndustry
+          console.log(this.industry)
+          this.mainPath = this.industry.key + '/incidents'
+        } else {
+          localStorage.removeItem('industries')
+          this.router.navigate(['/pricing'])
+        }
+        this.getData()
+      }
+    })
+  }
+
 
   async getData() {
     try {
       const dataRef = await dbRef(this.database, this.mainPath)
       onValue(dataRef, (snapshot) => {
         if(snapshot.exists()) {
-          this.data = snapshot.val()
+          this.data = Object.entries(snapshot.val()).map(([key, value]: any) => ({ key, ...value }))
           this.data.forEach((item: any, index: number) => {
             const timestamp = this.data[index].timestamp
             const date = new Date(timestamp)
@@ -66,17 +112,31 @@ export class IncidentsPage implements OnInit {
       this.subtitle = this.data[index].subtitle
       this.location = this.data[index].location
       this.link = this.data[index].link
-      const timestamp = this.data[index].timestamp
+      const timestamp = this.data[index]?.timestamp
       const date = new Date(timestamp)
-      this.date = date.toISOString().substring(0, 10)
-      this.time = date.toISOString().substring(11, 16)
+      console.log(timestamp)
+      if (timestamp) {
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          this.date = date.toISOString().substring(0, 10);
+          this.time = date.toISOString().substring(11, 16);
+        } else {
+          console.warn('Invalid date:', timestamp);
+          this.date = '';
+          this.time = '';
+        }
+      } else {
+        console.warn('No timestamp provided');
+        this.date = '';
+        this.time = '';
+      }
     }
   }
 
   onSubmit() {
-    let pathRef = 'hayago/incidents/'+this.data.length
+    let pathRef = this.mainPath+'/'+this.data.length
     if (this.selectedData != null) {
-      pathRef = 'hayago/incidents/'+this.selectedData
+      pathRef = this.mainPath+'/'+this.selectedData
     }
     const dataRef = dbRef(this.database, pathRef)
     const dateString = `${this.date}T${this.time}:00Z`
@@ -93,43 +153,13 @@ export class IncidentsPage implements OnInit {
   }
 
   onDelete() {
-    const dataRef = dbRef(this.database, 'hayago/incidents/'+this.selectedData)
+    const dataRef = dbRef(this.database, this.mainPath+'/'+this.selectedData)
     remove(dataRef).then(() => {
-      console.log('Data deleted successfully');
       document.getElementById('delete_modal')?.click();
-      this.reorderData();
+      window.location.reload()
     }).catch((error) => {
       console.error('Error deleting data:', error);
     });
     document.getElementById('delete_modal')?.click()
-    this.getData()
-  }
-
-  reorderData() {
-    const dataRef = dbRef(this.database, 'hayago/incidents/');
-    onValue(dataRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const reorderedData: any[] = [];
-        let index = 0;
-        for (let key in data) {
-          reorderedData.push({ ...data[key], id: index });
-          index++;
-        }
-        this.updateData(reorderedData);
-      }
-    });
-  }
-
-  updateData(reorderedData: any[]) {
-    const dataRef = dbRef(this.database, 'hayago/incidents/');
-    remove(dataRef).then(() => {
-      reorderedData.forEach((item, index) => {
-        const newRef = dbRef(this.database, 'hayago/incidents/' + index);
-        set(newRef, item);
-      });
-    }).catch((error) => {
-      console.error('Error updating data:', error);
-    });
   }
 }

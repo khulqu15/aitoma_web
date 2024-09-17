@@ -25,6 +25,7 @@
         <div class="dropdown dropdown-end text-base-content">
           <div tabindex="0" role="button" class="btn m-1 btn-sm px-0" [ngClass]="{'bg-blue-600 text-white border-0': i == selectedIndustry}"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
           <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+            <li><label for="key_modal" (click)="selectedData = i">Key Token</label></li>
             <li><a (click)="editIndustry(i)">Edit</a></li>
             <li><label for="delete_modal" (click)="selectedData = i">Remove</label></li>
           </ul>
@@ -41,6 +42,31 @@
     <li><a (click)="navigatePush('datasheets')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('datasheets')}"><span class="text-xl icon-[solar--diagram-up-bold]"></span> {{ menu[5][selectedLanguage] }}</a></li>
     <li><a (click)="navigatePush('incidents')" [ngClass]="{'bg-blue-600 text-white': isMenuActive('incidents')}"><span class="text-xl icon-[carbon--warning-alt-filled]"></span> {{ menu[6][selectedLanguage] }}</a></li>
   </ul>
+
+  <input type="checkbox" id="key_modal" class="modal-toggle" />
+  <div *ngIf="industries.length > 0" class="modal" role="dialog">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Industry Key Access</h3>
+      <div class="form-control my-3">
+        <label for="key">Key</label>
+        <div class="flex items-center gap-3">
+          <input required type="text" name="key" id="key" class="input input-bordered w-full text-sm m-book" [(ngModel)]="industries[selectedData].profile.key" [ngModelOptions]="{standalone: true}"/>
+          <button (click)="copyText($event, industries[selectedData].profile.key, 'key')" class="btn bg-blue-600/10 text-blue-600">{{ copiedButton == 'key' ? 'Copied' : 'Copy' }}</button>
+        </div>
+      </div>
+      <div class="form-control my-3">
+        <label for="token">Token</label>
+        <div class="flex items-center gap-3">
+          <input required type="text" name="token" id="token" class="input input-bordered w-full text-sm m-book"  [(ngModel)]="industries[selectedData].profile.token" [ngModelOptions]="{standalone: true}"/>
+          <button (click)="copyText($event, industries[selectedData].profile.token, 'token')" class="btn bg-blue-600/10 text-blue-600">{{ copiedButton == 'token' ? 'Copied' : 'Copy' }}</button>
+        </div>
+      </div>
+      <div class="modal-action">
+        <label for="key_modal" class="btn">Close</label>
+      </div>
+    </div>
+  </div>
+
 
   <input type="checkbox" id="edit_modal" class="modal-toggle" />
   <div class="modal" role="dialog">

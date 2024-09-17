@@ -20,6 +20,7 @@ export class MenuComponent  implements OnInit {
   loading: boolean = true
   selectedIndustry: number = 0
   selectedData: number = 0
+  copiedButton: any = null
 
   name: string = ''
   location: string = ''
@@ -57,7 +58,7 @@ export class MenuComponent  implements OnInit {
         let localIndustries = JSON.parse(localStorage.getItem('industries') as string)
         this.industries = []
         for(let j = 0; j < localIndustries.length; j++) {
-          let checkIndustry = listIndustries.find((item) => item.profile.key == localIndustries[j].key && item.profile.token == localIndustries[j].token)
+          let checkIndustry = listIndustries.find((item) => item.profile?.key == localIndustries[j].key && item.profile?.token == localIndustries[j].token)
           if(checkIndustry != null && checkIndustry != undefined) {
             this.industries.push(checkIndustry)
           }
@@ -157,5 +158,13 @@ export class MenuComponent  implements OnInit {
   selectIndustry(index: number) {
     localStorage.setItem('selected_industry', index.toString())
     window.location.reload()
+  }
+
+  copyText(event: Event, text: string, copiedText: string) {
+    this.copiedButton = copiedText
+    navigator.clipboard.writeText(text)
+    setTimeout(() => {
+      this.copiedButton = null
+    }, 500)
   }
 }

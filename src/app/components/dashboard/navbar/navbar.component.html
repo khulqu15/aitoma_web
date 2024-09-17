@@ -53,11 +53,11 @@
     <a>
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button">
-          <img src="../../../assets/image/avatar.png" class="w-8 h-8 overflow-hidden object-center object-cover rounded-full" alt="">
+          <img [src]="avatar" (load)="onImageLoad()" (error)="onImageError()" class="w-8 h-8 overflow-hidden object-center object-cover rounded-full" alt="">
         </div>
         <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
-          <li><a>Profile</a></li>
-          <li><a>Setting</a></li>
+          <li><a (click)="navigatePush('/profile')">Profile</a></li>
+          <!-- <li><a>Setting</a></li> -->
           <li><a (click)="logout()">Logout</a></li>
         </ul>
       </div>

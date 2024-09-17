@@ -22,36 +22,156 @@
                 </div>
                 <input type="checkbox" id="form_modal" class="modal-toggle" />
                 <div class="modal" role="dialog">
-                  <div class="modal-box">
+                  <div class="modal-box max-w-3xl">
                     <form (submit)="onSubmit()">
                       <h3 class="text-lg font-bold">
-                        <span>{{ selectedData == null ? 'Add Device' : 'Update Device' }}</span>
+                        <span>{{ selectedData == null ? 'Add Datasheet' : 'Update Datasheet' }}</span>
                       </h3>
-                      <div class="my-2">
-                        <label for="title" class="m-book text-sm">Incident</label>
-                        <input required [(ngModel)]="title" [ngModelOptions]="{standalone: true}" id="title" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
-                      </div>
-                      <div class="my-2">
-                        <label for="location" class="m-book text-sm">Location</label>
-                        <input required [(ngModel)]="location" [ngModelOptions]="{standalone: true}" id="location" type="text" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
-                      </div>
-                      <div class="grid grid-cols-2 gap-3 my-2">
-                        <div>
-                          <label for="date" class="m-book text-sm">Date</label>
-                          <input required [(ngModel)]="date" [ngModelOptions]="{standalone: true}" id="date" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                      <div class="grid grid-cols-3 gap-1">
+                        <div class="my-2">
+                          <label for="name" class="m-book text-sm">Object Name</label>
+                          <input required [(ngModel)]="name" [ngModelOptions]="{standalone: true}" id="name" type="text" placeholder="MTR-3 Motor 3 Phase" class="input input-bordered w-full mt-2 text-sm" />
                         </div>
-                        <div>
-                          <label for="time" class="m-book text-sm">Time</label>
-                          <input required [(ngModel)]="time" [ngModelOptions]="{standalone: true}" id="time" type="time" class="input input-bordered w-full mt-2 text-sm" />
+                        <div class="my-2">
+                          <label for="application" class="m-book text-sm">Application</label>
+                          <input required [(ngModel)]="application" [ngModelOptions]="{standalone: true}" id="application" type="text" placeholder="Industrial Conveyor System" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                        <div class="my-2">
+                          <label for="serial_number" class="m-book text-sm">Serial Number</label>
+                          <input required [(ngModel)]="serial_number" [ngModelOptions]="{standalone: true}" id="serial_number" type="text" placeholder="ETM123456789" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                        <div class="my-2">
+                          <label for="model" class="m-book text-sm">Object Model</label>
+                          <input required [(ngModel)]="model" [ngModelOptions]="{standalone: true}" id="model" type="text" placeholder="ETM-4000" class="input input-bordered w-full mt-2 text-sm" />
+                        </div>
+                        <div class="my-2">
+                          <label for="manufacturer" class="m-book text-sm">Manufacturer</label>
+                          <input required [(ngModel)]="manufacturer" [ngModelOptions]="{standalone: true}" id="manufacturer" type="text" placeholder="ElectroTech Motors Inc." class="input input-bordered w-full mt-2 text-sm" />
                         </div>
                       </div>
-                      <div class="my-2">
-                        <label for="subtitle" class="m-book text-sm">Desciption</label>
-                        <textarea required [(ngModel)]="subtitle" [ngModelOptions]="{standalone: true}" id="subtitle" placeholder="Temperature exceeded 85C in Zone 3" class="textarea textarea-bordered w-full mt-2 text-sm"></textarea>
+                      <div>
+                        <div class="flex items-center justify-between mt-8">
+                          <h2>Datasheet Value</h2>
+                          <button type="button" (click)="addValue()" class="btn bg-blue-600 hover:bg-blue-700 text-white">Add</button>
+                        </div>
+                        <div *ngFor="let item of values; let i = index" class="grid grid-cols-3 gap-1">
+                          <div class="my-2">
+                            <label [for]="'key'+i" class="m-book text-sm">Key</label>
+                            <input required [(ngModel)]="values[i].key" [ngModelOptions]="{standalone: true}" [id]="'key'+i" type="text" placeholder="Temperature Max" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'value'+i" class="m-book text-sm">Value</label>
+                            <input required [(ngModel)]="values[i].value" [ngModelOptions]="{standalone: true}" [id]="'value'+i" type="text" placeholder="1000" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2 flex items-end gap-1">
+                            <div>
+                              <label [for]="'unit'+i" class="m-book text-sm">Unit</label>
+                              <input required [(ngModel)]="values[i].unit" [ngModelOptions]="{standalone: true}" [id]="'unit'+i" type="text" placeholder="C" class="input input-bordered w-full mt-2 text-sm" />
+                            </div>
+                            <button type="button" (click)="removeValue(i)" class="btn btn-error">Remove</button>
+                          </div>
+                        </div>
                       </div>
-                      <div class="my-2">
-                        <label for="link" class="m-book text-sm">Link</label>
-                        <input required [(ngModel)]="link" [ngModelOptions]="{standalone: true}" id="link" type="url" placeholder="High Temperature" class="input input-bordered w-full mt-2 text-sm" />
+                      <div>
+                        <div class="flex items-center justify-between mt-8">
+                          <h2>Maintenance</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                          <div class="my-2">
+                            <label for="maintenance_initial" class="m-book text-sm">Initial Inspection</label>
+                            <input required [(ngModel)]="maintenance.initial" [ngModelOptions]="{standalone: true}" id="maintenance_initial" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label for="maintenance_lubrication" class="m-book text-sm">Lubrication Inspection</label>
+                            <input required [(ngModel)]="maintenance.lubrication" [ngModelOptions]="{standalone: true}" id="maintenance_lubrication" type="text" placeholder="Every 6 months or 2000 hours of operation" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label for="maintenance_interval" class="m-book text-sm">Interval Months</label>
+                            <input required [(ngModel)]="maintenance.interval" [ngModelOptions]="{standalone: true}" id="maintenance_interval" type="text" placeholder="6" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label for="maintenance_spare" class="m-book text-sm">Spare</label>
+                            <input required [(ngModel)]="maintenance.spare" [ngModelOptions]="{standalone: true}" id="maintenance_spare" type="text" placeholder="Bearing, Stator" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="flex items-center justify-between mt-8">
+                          <h2>Operational Data</h2>
+                          <button type="button" (click)="addOperation()" class="btn bg-blue-600 hover:bg-blue-700 text-white">Add</button>
+                        </div>
+                        <div *ngFor="let item of operations; let i = index" class="grid grid-cols-3 gap-1">
+                          <div class="my-2">
+                            <label [for]="'timestamp'+i" class="m-book text-sm">Timestamp</label>
+                            <input required [(ngModel)]="operations[i].timestamp" [ngModelOptions]="{standalone: true}" [id]="'timestamp'+i" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'current'+i" class="m-book text-sm">Current A</label>
+                            <input required [(ngModel)]="operations[i].current" [ngModelOptions]="{standalone: true}" [id]="'current'+i" type="text" placeholder="58" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'runtime'+i" class="m-book text-sm">Runtime M</label>
+                            <input required [(ngModel)]="operations[i].runtime" [ngModelOptions]="{standalone: true}" [id]="'runtime'+i" type="text" placeholder="1000" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'vibration'+i" class="m-book text-sm">Vibration mms</label>
+                            <input required [(ngModel)]="operations[i].vibration" [ngModelOptions]="{standalone: true}" [id]="'vibration'+i" type="text" placeholder="2.1" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'power'+i" class="m-book text-sm">Power kWH</label>
+                            <input required [(ngModel)]="operations[i].power" [ngModelOptions]="{standalone: true}" [id]="'power'+i" type="text" placeholder="29.5" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'load'+i" class="m-book text-sm">Load %</label>
+                            <input required [(ngModel)]="operations[i].load" [ngModelOptions]="{standalone: true}" [id]="'load'+i" type="text" placeholder="75" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'temperature'+i" class="m-book text-sm">Temperature C</label>
+                            <input required [(ngModel)]="operations[i].temperature" [ngModelOptions]="{standalone: true}" [id]="'temperature'+i" type="text" placeholder="70" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'factor'+i" class="m-book text-sm">Power Factor</label>
+                            <input required [(ngModel)]="operations[i].factor" [ngModelOptions]="{standalone: true}" [id]="'temperature'+i" type="text" placeholder="0.89" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2 flex items-end gap-1">
+                            <div>
+                              <label [for]="'voltage'+i" class="m-book text-sm">Voltage</label>
+                              <input required [(ngModel)]="operations[i].voltage" [ngModelOptions]="{standalone: true}" [id]="'voltage'+i" type="text" placeholder="440" class="input input-bordered w-full mt-2 text-sm" />
+                            </div>
+                            <button type="button" (click)="removeOperation(i)" class="btn btn-error">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="flex items-center justify-between mt-8">
+                          <h2>Fault History</h2>
+                          <button type="button" (click)="addFault()" class="btn bg-blue-600 hover:bg-blue-700 text-white">Add</button>
+                        </div>
+                        <div *ngFor="let item of faults; let i = index" class="grid grid-cols-3 gap-1">
+                          <div class="my-2">
+                            <label [for]="'timestamp'+i" class="m-book text-sm">Timestamp</label>
+                            <input required [(ngModel)]="faults[i].timestamp" [ngModelOptions]="{standalone: true}" [id]="'timestamp'+i" type="date" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'description'+i" class="m-book text-sm">Description</label>
+                            <input required [(ngModel)]="faults[i].description" [ngModelOptions]="{standalone: true}" [id]="'description'+i" type="text" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'duration'+i" class="m-book text-sm">Duration M</label>
+                            <input required [(ngModel)]="faults[i].duration" [ngModelOptions]="{standalone: true}" [id]="'duration'+i" type="text" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2">
+                            <label [for]="'action'+i" class="m-book text-sm">Action Taken</label>
+                            <input required [(ngModel)]="faults[i].action" [ngModelOptions]="{standalone: true}" [id]="'action'+i" type="text" class="input input-bordered w-full mt-2 text-sm" />
+                          </div>
+                          <div class="my-2 flex items-end gap-1">
+                            <div>
+                              <label [for]="'technician'+i" class="m-book text-sm">Technician</label>
+                              <input required [(ngModel)]="faults[i].technician" [ngModelOptions]="{standalone: true}" [id]="'technician'+i" type="text" class="input input-bordered w-full mt-2 text-sm" />
+                            </div>
+                            <button type="button" (click)="removeOperation(i)" class="btn btn-error">Remove</button>
+                          </div>
+                        </div>
                       </div>
                       <div class="modal-action">
                         <label for="form_modal" class="btn">Cancel</label>
@@ -65,10 +185,10 @@
                 <div class="modal" role="dialog">
                   <div class="modal-box">
                     <h3 class="text-lg font-bold">
-                      <span>Delete Incident ?</span>
+                      <span>Delete Datasheet ?</span>
                     </h3>
                     <div class="my-2">
-                      <p class="m-book text-sm">Are you sure ? data will be deleted permanently.</p>
+                      <p class="m-book text-sm">Are you sure ? datasheet will be deleted permanently.</p>
                     </div>
                     <div class="modal-action">
                       <label for="delete_modal" class="btn">Cancel</label>
@@ -89,8 +209,8 @@
               </div>
 
               <div>
-                <div *ngFor="let item of data; let i = index" tabindex="0" class="collapse collapse-arrow border-base-300 bg-base-200 border my-2">
-                  <div class="collapse-title">
+                <div *ngFor="let item of data; let i = index" tabindex="0" class="border-base-300 rounded-xl pb-6 bg-base-200 border my-2">
+                  <div class="collapse-title" (click)="selectedData = i">
                     <div class="w-full grid md:grid-cols-2 grid-cols-1 justify-between items-center gap-3">
                       <div>
                         <span class="badge bg-blue-600 text-white capitalize mb-2">{{ item?.category }}</span>
@@ -105,14 +225,15 @@
                         <div class="dropdown dropdown-end md:relative absolute md:right-0 right-8 md:top-0 top-3">
                           <div tabindex="0" role="button" class="btn btn-sm bg-base-100 px-0 m-1"><span class="text-xl icon-[uis--ellipsis-v]"></span></div>
                           <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
-                            <li><a>Delete All</a></li>
+                            <li><label for="form_modal" class="setSelect(i)">Update</label></li>
+                            <li><label for="delete_modal">Delete</label></li>
                           </ul>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="collapse-content">
-                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
+                  <div *ngIf="selectedData == i">
+                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3 p-4">
                       <div class="col-span-1">
                         <div class="w-full overflow-x-auto">
                           <table class="table table-xs">
@@ -123,85 +244,9 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <th>Altitude Max</th>
-                                <th>{{ item?.altitude_max_m }} m</th>
-                              </tr>
-                              <tr>
-                                <th>Ambient Temperature Max</th>
-                                <th>{{ item?.ambient_temperature_max_C }} C</th>
-                              </tr>
-                              <tr>
-                                <th>Bearing Type</th>
-                                <th>{{ item?.bearing_type }} </th>
-                              </tr>
-                              <tr>
-                                <th>Cooling Method</th>
-                                <th>{{ item?.cooling_method }} </th>
-                              </tr>
-                              <tr>
-                                <th>Current Rating</th>
-                                <th>{{ item?.current_rating_A }} A</th>
-                              </tr>
-                              <tr>
-                                <th>Date Manufacturer</th>
-                                <th>{{ item?.date_of_manufacture }} </th>
-                              </tr>
-                              <tr>
-                                <th>Dimension (mm)</th>
-                                <th>height: {{ item?.dimensions_mm?.height }}, width: {{ item?.dimensions_mm?.width }}, length: {{ item?.dimensions_mm?.length }} </th>
-                              </tr>
-                              <tr>
-                                <th>Efficiency</th>
-                                <th>{{ item?.efficiency_percent }} %</th>
-                              </tr>
-                              <tr>
-                                <th>Installation Date</th>
-                                <th>{{ item?.installation_date }}</th>
-                              </tr>
-                              <tr>
-                                <th>Insulation Class</th>
-                                <th>{{ item?.insulation_class }}</th>
-                              </tr>
-                              <tr>
-                                <th>Mounting Type</th>
-                                <th>{{ item?.mounting_type }}</th>
-                              </tr>
-                              <tr>
-                                <th>Noise Level</th>
-                                <th>{{ item?.noise_level_dBA }} dBA</th>
-                              </tr>
-                              <tr>
-                                <th>Power Factore</th>
-                                <th>{{ item?.power_factor }}</th>
-                              </tr>
-                              <tr>
-                                <th>Power Rating kW</th>
-                                <th>{{ item?.power_rating_kW }} kW</th>
-                              </tr>
-                              <tr>
-                                <th>Protection Class</th>
-                                <th>{{ item?.protection_class }}</th>
-                              </tr>
-                              <tr>
-                                <th>Service Factor</th>
-                                <th>{{ item?.service_factor }}</th>
-                              </tr>
-                              <tr>
-                                <th>Shaft Diameter</th>
-                                <th>{{ item?.shaft_diameter_mm }} mm</th>
-                              </tr>
-                              <tr>
-                                <th>Voltage Rating</th>
-                                <th>{{ item?.voltage_rating_V }} V</th>
-                              </tr>
-                              <tr>
-                                <th>Warranty Period</th>
-                                <th>{{ item?.warranty_period_year }} Year</th>
-                              </tr>
-                              <tr>
-                                <th>Weight</th>
-                                <th>{{ item?.weight_kg }} Kg</th>
+                              <tr *ngFor="let item of item?.values; let j = index">
+                                <th>{{ item?.key }}</th>
+                                <th>{{ item?.value }} {{ item.unit }}</th>
                               </tr>
                             </tbody>
                           </table>
@@ -222,13 +267,13 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr *ngFor="let operation of item?.operational_data; let j = index">
+                              <tr *ngFor="let operation of item?.operations; let j = index">
                                 <th>{{ operation?.timestamp }}</th>
-                                <th>{{ operation?.current_A }}A</th>
-                                <th>{{ operation?.voltage_V }}V</th>
-                                <th>{{ operation?.power_kW }}kW</th>
-                                <th>{{ operation?.runtime_hours }} Hours</th>
-                                <th>{{ operation?.vibration_mms }} m/s<sup>2</sup></th>
+                                <th>{{ operation?.current }} A</th>
+                                <th>{{ operation?.voltage }} V</th>
+                                <th>{{ operation?.power }} kW</th>
+                                <th>{{ operation?.runtime }} Hours</th>
+                                <th>{{ operation?.vibration }} m/s<sup>2</sup></th>
                               </tr>
                             </tbody>
                           </table>
@@ -246,11 +291,11 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr *ngFor="let operation of item?.fault_history; let j = index">
+                              <tr *ngFor="let operation of item?.faults; let j = index">
                                 <th>{{ operation?.timestamp }}</th>
                                 <th>{{ operation?.description }}</th>
-                                <th>{{ operation?.duration_min }}</th>
-                                <th>{{ operation?.action_taken }}</th>
+                                <th>{{ operation?.duration }}</th>
+                                <th>{{ operation?.action }}</th>
                                 <th>{{ operation?.technician }}</th>
                               </tr>
                             </tbody>
@@ -268,23 +313,19 @@
                             <tbody>
                               <tr>
                                 <th>Initial Date</th>
-                                <th>{{ item?.maitenance_schedule?.initial_inspection }}</th>
+                                <th>{{ item?.maintenance?.initial }}</th>
                               </tr>
                               <tr>
                                 <th>Lubrication Schedule</th>
-                                <th>{{ item?.maitenance_schedule?.lubrication_schedule }}</th>
+                                <th>{{ item?.maintenance?.lubrication }}</th>
                               </tr>
                               <tr>
                                 <th>Interval</th>
-                                <th>{{ item?.maitenance_schedule?.next_inspection_interval_months }} Months</th>
+                                <th>{{ item?.maintenance?.interval }} Months</th>
                               </tr>
                               <tr>
                                 <th>Recommended Spare Parts</th>
-                                <th>
-                                  <span class="badge m-book text-xs badge-sm" *ngFor="let spare of item?.maitenance_schedule?.recommended_spare_parts; let j = index">
-                                    {{ spare }}
-                                  </span>
-                                </th>
+                                <th>{{ item?.maintenance?.spare }}</th>
                               </tr>
                             </tbody>
                           </table>
